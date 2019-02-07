@@ -1,0 +1,52 @@
+/* 		<-------		VARIABLES			------>		  */
+
+:root {
+  --gn: green;
+  --rad: 5px;
+  --blue: #4d73f0;
+  --blue-hover: #39becf;
+  --nav-hover: #3680e0;
+  --w: #fff;
+  --b: #000;
+  --btn-ok: rgb(154, 236, 22);
+  --btn-ok-hover: rgb(11, 189, 91);
+  --btn-err: rgb(241, 79, 30);
+  --err: #ff1e00e8;
+  --err-back: #ff00001a;
+  --btn-err-hover: rgb(241, 79, 30);
+  --dark-theme: #000104e8;
+}
+
+body {
+  background-color: whitesmoke;
+}
+nav a {
+  color: var(--w);
+  padding: 1em;
+  text-decoration: none;
+}
+nav a:focus,
+nav a:hover {
+  background-color: var(--nav-hover);
+}
+nav {
+  display: flex;
+  width: 100vw;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--blue);
+  color: var(--w);
+}
+
+/* 		<-------  	404   	------>	   	*/
+.error {
+  background-image: url(404.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
