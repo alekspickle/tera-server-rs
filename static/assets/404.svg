@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: SketchAPI 5.1.316 <https://api.sketch.io/> -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketchjs="https://sketch.io/dtd/" style="" sketchjs:metadata="eyJ0aXRsZSI6IjlhMmI2MmVhLTNiNDEtNGFjMC1iMzllLThlMDBiZGY4ODA5NiIsImRlc2NyaXB0aW9uIjoiTWFkZSB3aXRoIFNrZXRjaHBhZCAtIGh0dHBzOi8vc2tldGNoLmlvL3NrZXRjaHBhZCIsIm1ldGFkYXRhIjp7fSwiY2xpcFBhdGgiOnsiZW5hYmxlZCI6dHJ1ZSwic3R5bGUiOnsic3Ryb2tlU3R5bGUiOiJibGFjayIsImxpbmVXaWR0aCI6MX19LCJleHBvcnREUEkiOjcyLCJleHBvcnRGb3JtYXQiOiJwbmciLCJleHBvcnRRdWFsaXR5IjowLjk1LCJ1bml0cyI6InB4Iiwid2lkdGgiOjE0NDAsImhlaWdodCI6Njc2LCJwYWdlcyI6eyJsZW5ndGgiOjEsImRhdGEiOlt7IndpZHRoIjoxNDQwLCJoZWlnaHQiOjY3Nn1dfX0=" width="1440" height="676" viewBox="0 0 1440 676" sketchjs:version="5.1.316">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketchjs="https://sketch.io/dtd/" style="" sketchjs:metadata="eyJ0aXRsZSI6IjlhMmI2MmVhLTNiNDEtNGFjMC1iMzllLThlMDBiZGY4ODA5NiIsImRlc2NyaXB0aW9uIjoiTWFkZSB3aXRoIFNrZXRjaHBhZCAtIGh0dHBzOi8vc2tldGNoLmlvL3NrZXRjaHBhZCIsIm1ldGFkYXRhIjp7fSwiY2xpcFBhdGgiOnsiZW5hYmxlZCI6dHJ1ZSwic3R5bGUiOnsic3Ryb2tlU3R5bGUiOiJibGFjayIsImxpbmVXaWR0aCI6MX19LCJleHBvcnREUEkiOjcyLCJleHBvcnRGb3JtYXQiOiJwbmciLCJleHBvcnRRdWFsaXR5IjowLjk1LCJ1bml0cyI6InB4Iiwid2lkdGgiOjE0NDAsImhlaWdodCI6Njc2LCJwYWdlcyI6eyJsZW5ndGgiOjEsImRhdGEiOlt7IndpZHRoIjoxNDQwLCJoZWlnaHQiOjY3Nn1dfX0=" width="840" height="676" viewBox="150 0 840 676" sketchjs:version="5.1.316">
 <defs>
 	<path id="path-2664424766" d="null" sketchjs:uid="5" style="opacity: 1; paint-order: stroke fill markers;"/>
 	<path id="path-1495161278" d="null" sketchjs:uid="5" style=""/>
 	<path id="path-1717462930" d="null" sketchjs:uid="5" style=""/>
 </defs>
-<path sketchjs:tool="rectangle" style="fill: #ffffff; mix-blend-mode: source-over; fill-opacity: 1; fill-rule: nonzero; vector-effect: non-scaling-stroke;" d="M0 0 L1440 0 1440 676 0 676 z"/>
 <g sketchjs:tool="calligraphy" style="mix-blend-mode: source-over;" transform="matrix(1,0,0,1,266,184)">
 	<g sketchjs:uid="1" style="">
 		<g transform="matrix(1,0,0,1,13,13)" sketchjs:uid="2" style="">
@@ -4022,12 +4021,6 @@
 			<path sketchjs:uid="205" style="fill: none;"/>
 			<path d="M 3.1611652351681556 138.41116523516817L 3.1611652351681556 137.91116523516817L 20.838834764831844 155.58883476483183L 20.838834764831844 156.08883476483183Z" sketchjs:uid="206" style="fill: #000000; paint-order: stroke fill markers;"/>
 		</g>
-	</g>
-</g>
-<g sketchjs:tool="clipart" style="mix-blend-mode: difference; opacity: 0.88;" transform="matrix(0.8746457684637721,0,0,0.8746457684637721,195.80519889444776,480.7990763740685)">
-	<g sketchjs:uid="1" style="opacity: 1; stroke-linecap: round;">
-		<path d="M36.299 13.238c-10.06 0-18.213 10.194-18.213 22.767 0 12.574 8.154 22.767 18.213 22.768 10.06 0 18.214-10.193 18.215-22.768 0-12.574-8.156-22.768-18.215-22.767zm-9.43 7.515l7.455 4.15c.754.6.2 1.976-.936 1.608L25.35 23.12c-1.102-.7.342-2.827 1.517-2.366zm19.074.266c1.059-.543 2.69 1.406 1.517 2.366l-8.037 3.392c-1.014.368-1.75-.995-.935-1.605zm-18.52 4.776c1.332 0 2.68 1.346 2.68 2.678 0 1.332-1.348 2.679-2.68 2.678-1.33 0-2.677-1.347-2.677-2.678s1.347-2.678 2.678-2.678zm18.028.1c1.332 0 2.68 1.347 2.68 2.678.001 1.333-1.347 2.681-2.68 2.68-1.331 0-2.678-1.348-2.678-2.68 0-1.33 1.347-2.677 2.678-2.678zm4.604 9.522c1.276.388.694 2.302-.582 1.914-9.884-4.177-15.13-3.79-26.715-.302-1.306.427-1.894-1.57-.565-1.918 9.782-3.644 17.56-4.537 27.862.306z" sketchjs:uid="2" style="fill: #e41b41; stroke-width: 5; stroke-linejoin: round;"/>
-		<path d="M4.796 16.323c.668 5.477 6.886 13.162 10.861 15.507M68.7 19.863c-.668 5.477-6.887 13.162-10.862 15.507M9.79 61.969c.668-5.478 4.386-9.591 8.361-11.936M63.345 61.611c-.668-5.477-4.386-9.59-8.361-11.935M14.417 41.969l-8.362.207M65.123 41.974l-8.361.207M45.599 4.806c-2.232 1.487-4.21 3.313-5.027 6.685M28.612 4.803c2.232 1.487 4.21 3.313 5.026 6.685" sketchjs:uid="3" style="fill: none; stroke: #e41b41; fill-rule: evenodd; stroke-width: 2.5;"/>
 	</g>
 </g>
 </svg>

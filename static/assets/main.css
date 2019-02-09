@@ -19,6 +19,7 @@
 
 body {
   background-color: whitesmoke;
+  margin: 0;
 }
 nav a {
   color: var(--w);
@@ -38,15 +39,18 @@ nav {
   background-color: var(--blue);
   color: var(--w);
 }
-
+main {
+  text-align: center;
+}
 /* 		<-------  	404   	------>	   	*/
 .error {
   background-image: url(404.svg);
   background-repeat: no-repeat;
   background-size: cover;
-  width: 100vw;
-  height: 100vh;
+  width: 80vw;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
 }
