@@ -2,19 +2,20 @@
 extern crate tera;
 #[macro_use]
 extern crate lazy_static;
-
+use futures;
 use actix_web::http::{header, Method};
 use actix_web::middleware::session;
-use actix_web::{fs, middleware, pred, server, App, Error, HttpRequest, HttpResponse};
+use actix_web::{fs, middleware, pred, server, App, HttpResponse};
 use env_logger;
 use listenfd::ListenFd;
 mod router;
+mod controllers;
 // mod server::{Server};
 
 fn main() {
     //init logger
     ::std::env::set_var("RUST_LOG", "actix_web=info");
-    env_logger::init();
+    // env_logger::init();
 
     //init autoreload additional sockets
     let mut listenfd = ListenFd::from_env();
@@ -28,7 +29,8 @@ fn main() {
             .handler("/static", fs::StaticFiles::new("static").unwrap())
             .resource("/favicon", |r| r.get().f(router::favicon))
             .resource("/", |r| r.get().f(router::index))
-            .resource("/detail", |r| r.get().f(router::detail))
+            .resource("/triplets", |r| r.get().f(router::triplets))
+            .resource("/generate_triplets", |r| r.post().f(router::generate_triplets))
             .resource("/calculate", |r| r.get().f(router::calculate))
             // redirect
             .resource("/test", |r| {

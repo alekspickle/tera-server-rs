@@ -1,5 +1,7 @@
-use actix_web::middleware::session::{self, RequestSession};
-use actix_web::{error, fs, Error, HttpRequest, HttpResponse};
+use crate::controllers::{draw_rectangle, pythagorian_triplets, Triplet};
+use actix_web::middleware::session::RequestSession;
+use actix_web::{error, fs, Error, HttpMessage, HttpRequest, HttpResponse};
+use futures::future::Future;
 use tera::{Context, Tera};
 
 lazy_static! {
@@ -8,6 +10,14 @@ lazy_static! {
         tera.autoescape_on(vec!["html", ".sql"]);
         tera
     };
+}
+
+fn show_request(req: &actix_web::HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
+    Box::new(req.body().map_err(|e| e.into()).map(move |f| {
+        actix_web::HttpResponse::Ok()
+            .content_type("text/plain")
+            .body(f)
+    }))
 }
 
 /// favicon handler
@@ -32,14 +42,29 @@ pub fn index(req: &HttpRequest) -> Result<HttpResponse, Error> {
     render_with_ctx("pages/index.html", ctx)
 }
 
-///details
-pub fn detail(req: &HttpRequest) -> Result<HttpResponse, Error> {
+///triplets page
+pub fn triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let mut _ctx = Context::new();
 
-    render_page("pages/detail.html")
+    render_page("pages/triplets.html")
 }
 
-//details
+///triplets
+pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let n = "2";
+    show_request(req);
+    println!("state {:?} body {:?}", req.state(), req.body().wait());
+    let triplet: Triplet = pythagorian_triplets(n);
+    let mut ctx = Context::new();
+    ctx.insert("triplet", &triplet.body());
+    ctx.insert("time", &triplet.time());
+
+    println!("triplet {:?} time {:?} ", &triplet.body(), &triplet.time());
+
+    render_page("pages/triplets.html")
+}
+
+//calculations
 pub fn calculate(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let calculated: u32 = 10 + 9876;
