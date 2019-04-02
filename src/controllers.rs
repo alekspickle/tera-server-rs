@@ -117,8 +117,10 @@ pub fn pythagorian_triplets(n: &str) -> Triplet {
         .flatten()
         .take(n)
         .for_each(|x| {
-            println!("triplets {:?}", triplets);
-            triplets = format!("{:?}{:?} \n", triplets, x)});
+            println!("triplets {:?} next {:?}", triplets, x);
+            // triplets = triplets.push_str(&format!("({:?}, {:?},{:?})",x.0,x.1,x.2));
+            triplets = format!("{:?}; ({:?}, {:?}, {:?})", triplets, x.0, x.1, x.2)
+        });
 
     Triplet::new(&triplets, moment.elapsed())
 }

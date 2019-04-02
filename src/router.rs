@@ -4,6 +4,10 @@ use actix_web::{error, fs, Error, HttpMessage, HttpRequest, HttpResponse};
 use futures::future::Future;
 use tera::{Context, Tera};
 
+struct PythagorianForm{
+    n: i32
+}
+
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
         let mut tera = compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/static/**/*"));
