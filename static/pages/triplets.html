@@ -9,4 +9,10 @@
       <label><input type="submit" ></label>
     </form>
   </p>
+  {% if time %}
+  <div>{{ time }}</div>
+  {% endif %}
+  {% if triplet %}
+  <div>{{ triplet }}</div>
+  {% endif %}
 {% endblock content %}

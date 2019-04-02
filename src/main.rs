@@ -3,10 +3,10 @@ extern crate tera;
 #[macro_use]
 extern crate lazy_static;
 use futures;
+use env_logger;
 use actix_web::http::{header, Method};
 use actix_web::middleware::session;
 use actix_web::{fs, middleware, pred, server, App, HttpResponse};
-use env_logger;
 use listenfd::ListenFd;
 mod router;
 mod controllers;
@@ -60,5 +60,6 @@ fn main() {
             .expect("Could not bind to port 3000")
     };
 
+    println!("Server is running on 127.0.0.1:3000");
     server.run()
 }
