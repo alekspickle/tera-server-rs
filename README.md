@@ -1,6 +1,6 @@
 ## Simple server to learn rust
 
-listenfd - this is crate for autoreload server during development
+listenfd - this is crate for passing port to the server during development
 
 so the run script is a bit different:
 
