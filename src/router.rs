@@ -4,7 +4,7 @@ use actix_web::{error, fs, Error, HttpMessage, HttpRequest, HttpResponse};
 use futures::future::Future;
 use tera::{Context, Tera};
 
-struct PythagorianForm{
+struct PythagorianForm {
     n: i32
 }
 
@@ -16,7 +16,7 @@ lazy_static! {
     };
 }
 
-fn show_request(req: &actix_web::HttpRequest) -> Box<Future<Item = HttpResponse, Error = Error>> {
+fn show_request(req: &actix_web::HttpRequest) -> Box<Future<Item=HttpResponse, Error=Error>> {
     Box::new(req.body().map_err(|e| e.into()).map(move |f| {
         actix_web::HttpResponse::Ok()
             .content_type("text/plain")

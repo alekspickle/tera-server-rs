@@ -12,6 +12,7 @@ pub struct Triplet {
     body: String,
     time: Duration,
 }
+
 impl Triplet {
     pub fn body(&self) -> String {
         self.body.clone()
