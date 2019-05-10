@@ -1,4 +1,4 @@
-use crate::controllers::{draw_rectangle, pythagorian_triplets, Triplet};
+use crate::controllers::{pythagorian_triplets, Triplet};
 use actix_web::middleware::session::RequestSession;
 use actix_web::{error, fs, Error, HttpMessage, HttpRequest, HttpResponse};
 use futures::future::Future;

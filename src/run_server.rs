@@ -1,14 +1,12 @@
-use futures;
-use env_logger;
 use actix_web::http::{header, Method};
 use actix_web::middleware::session;
 use actix_web::{fs, middleware, pred, server::HttpServer, App, HttpResponse};
 use listenfd::ListenFd;
-use router;
+use crate::router as router;
 
 pub struct Server {
     name: String,
-    instance: HttpServer<App,fn() -> App>,
+    instance: HttpServer<App,fn() -> App<()>>,
     listenfd: ListenFd,
 }
 
@@ -25,7 +23,7 @@ impl Server {
                 ))
                 .resource("/favicon", |r| r.f(router::favicon))
                 .resource("/", |r| r.get().f(router::index))
-                .resource("/detail", |r| r.get().f(router::detail))
+//                .resource("/detail", |r| r.get().f(router::detail))
                 .resource("/calculate", |r| r.get().f(router::calculate))
                 // redirect
                 .resource("/test", |r| {
