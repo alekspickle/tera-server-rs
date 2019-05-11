@@ -2,24 +2,26 @@
 extern crate tera;
 #[macro_use]
 extern crate lazy_static;
+
+mod controllers;
+pub mod router;
+mod run_server;
+
 //use actix_web::http::{header, Method};
 use actix_web::middleware::session;
 use actix_web::{fs, middleware, pred, server::HttpServer, App, HttpResponse};
 use env_logger;
 use futures;
 use listenfd::ListenFd;
-mod controllers;
-pub mod router;
-mod run_server;
+use run_server::Server;
+
 
 fn main() {
     //init logger
     ::std::env::set_var("RUST_LOG", "actix_web=info");
     // env_logger::init();
 
-    //init autoreload additional sockets
-    let mut listenfd = ListenFd::from_env();
-    let mut server_1: run_server::Server = run_server::Server::new("server_1");
+    let mut server_1 = Server { name: "server_1".to_owned(), port: "3000".to_owned() };
 
-    server_1.run();
+    server_1.start();
 }

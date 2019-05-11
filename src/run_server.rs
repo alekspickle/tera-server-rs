@@ -4,14 +4,15 @@ use actix_web::{fs, middleware, pred, server::HttpServer, App, HttpResponse};
 use listenfd::ListenFd;
 use crate::router as router;
 
-pub struct Server {
-    name: String,
-    instance: HttpServer<App,fn() -> App<()>>,
-    listenfd: ListenFd,
+pub struct Server
+{
+    pub name: String,
+    pub port: String,
 }
 
-impl Server {
-    pub fn new(name: &str) -> Server {
+impl Server
+{
+    pub fn start(&mut self) {
         //init autoreload additional sockets
         let mut listenfd = ListenFd::from_env();
 
@@ -24,6 +25,7 @@ impl Server {
                 .resource("/favicon", |r| r.f(router::favicon))
                 .resource("/", |r| r.get().f(router::index))
 //                .resource("/detail", |r| r.get().f(router::detail))
+                .resource("/image", |r| r.get().f(router::load_image))
                 .resource("/calculate", |r| r.get().f(router::calculate))
                 // redirect
                 .resource("/test", |r| {
@@ -48,19 +50,31 @@ impl Server {
                 })
         );
 
-        Server { name: name.to_owned(), instance: server, listenfd }
-    }
-    pub fn run(&mut self) -> () {
-        self.instance = if let Some(l) =
-        self.listenfd.take_tcp_listener(0).unwrap() {
-            self.instance.listen(l)
+        let path = "127.0.0.1:".to_owned() + &self.port;
+        server = if let Some(l) =
+        listenfd.take_tcp_listener(0).unwrap() {
+            server.listen(l)
         } else {
-            self.instance
-                .bind("127.0.0.1:3000")
-                .expect("Could not bind to port 3000")
+            server
+                .bind(path)
+                .expect(&format!("{}{}", "Could not bind to port ", &self.port))
         };
 
-        self.instance.run();
-        println!("Server is running on 127.0.0.1:3000");
+        server.run();
+        println!("Server is running on 127.0.0.1:{}", &self.port);
     }
+//    pub fn run() -> () {
+//        let path = "127.0.0.1:".to_owned() + port;
+//        self.instance = if let Some(l) =
+//        self.listenfd.take_tcp_listener(0).unwrap() {
+//            self.instance.listen(l)
+//        } else {
+//            self.instance
+//                .bind(path)
+//                .expect(&format!("{}{}","Could not bind to port ",port))
+//        };
+//
+//        self.instance.run();
+//        println!("Server is running on 127.0.0.1:{}",port);
+//    }
 }
