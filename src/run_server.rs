@@ -22,10 +22,12 @@ impl Server
                 .middleware(session::SessionStorage::new(
                     session::CookieSessionBackend::signed(&[0; 32]).secure(false),
                 ))
-                .resource("/favicon", |r| r.f(router::favicon))
                 .resource("/", |r| r.get().f(router::index))
-//                .resource("/detail", |r| r.get().f(router::detail))
-                .resource("/image", |r| r.get().f(router::load_image))
+                .resource("/favicon", |r| r.f(router::favicon))
+                .resource("/triplets", |r| r.f(router::triplets))
+                .resource("/generate_triplets", |r| r.f(router::generate_triplets))
+                .resource("/multipart_image", |r| r.get().f(router::multipart_image))
+                .resource("/load_image", |r| r.post().f(router::load_image))
                 .resource("/calculate", |r| r.get().f(router::calculate))
                 // redirect
                 .resource("/test", |r| {
@@ -63,18 +65,4 @@ impl Server
         server.run();
         println!("Server is running on 127.0.0.1:{}", &self.port);
     }
-//    pub fn run() -> () {
-//        let path = "127.0.0.1:".to_owned() + port;
-//        self.instance = if let Some(l) =
-//        self.listenfd.take_tcp_listener(0).unwrap() {
-//            self.instance.listen(l)
-//        } else {
-//            self.instance
-//                .bind(path)
-//                .expect(&format!("{}{}","Could not bind to port ",port))
-//        };
-//
-//        self.instance.run();
-//        println!("Server is running on 127.0.0.1:{}",port);
-//    }
 }

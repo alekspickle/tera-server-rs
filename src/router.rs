@@ -53,13 +53,6 @@ pub fn triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
     render_page("pages/triplets.html")
 }
 
-///load image functionality
-pub fn load_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    let mut _ctx = Context::new();
-
-    render_page("pages/load_images.html")
-}
-
 ///triplets
 pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let n = "2";
@@ -73,6 +66,20 @@ pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
     println!("triplet {:?} time {:?} ", &triplet.body(), &triplet.time());
 
     render_page("pages/triplets.html")
+}
+
+///load image page
+pub fn multipart_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let mut _ctx = Context::new();
+
+    render_page("pages/multipart_image.html")
+}
+
+///process multipart image file
+pub fn load_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let mut _ctx = Context::new();
+
+    render_page("pages/multipart_image.html")
 }
 
 //calculations

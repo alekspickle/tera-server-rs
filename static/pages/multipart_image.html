@@ -1,11 +1,11 @@
 {% extends "pages/base.html" %}
 {% block title %}Triplets{% endblock title %}
 {% block content %}
-<h1>Pythagorean triplets</h1>
+<h1>Multipart upload</h1>
 <p>
-<h3>How mutch do you want to generate?</h3>
-<form form action="/generate_triplets" method="post">
-    <label>n<input name="n" type="numeric"></label>
+<h3>Add your image</h3>
+<form form action="/load_image" method="post">
+    <label>image<input name="image" type="file"></label>
     <label><input type="submit" value="confirm"></label>
 </form>
 </p>

@@ -42,6 +42,9 @@ nav {
 main {
   text-align: center;
 }
+input{
+    margin: 0 0 1em 1em;
+}
 /* 		<-------  	404   	------>	   	*/
 .error {
   background-image: url(404.svg);
