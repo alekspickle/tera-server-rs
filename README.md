@@ -9,4 +9,4 @@ so the run script is a bit different:
  ```
 
 
-and you can see your changes without manually recompiling server.
+and you can see your changes without manually recompiling server thanks to ```cargo watch```.
