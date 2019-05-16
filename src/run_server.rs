@@ -23,13 +23,15 @@ impl Server
                     session::CookieSessionBackend::signed(&[0; 32]).secure(false),
                 ))
                 .resource("/", |r| r.get().f(router::index))
-                .resource("/favicon", |r| r.f(router::favicon))
                 .resource("/triplets", |r| r.f(router::triplets))
+                .resource("/christmas", |r| r.f(router::christmas))
                 .resource("/generate_triplets", |r| r.f(router::generate_triplets))
                 .resource("/multipart_image", |r| r.get().f(router::multipart_image))
                 .resource("/load_image", |r| r.post().f(router::load_image))
                 .resource("/load_image", |r| r.get().f(router::load_image))
-                .resource("/calculate", |r| r.get().f(router::calculate))
+                .resource("/convert", |r| r.get().f(router::convert))
+                .resource("/c2f", |r| r.post().f(router::c2_f))
+                .resource("/f2c", |r| r.post().f(router::f2_c))
                 // redirect
                 .resource("/test", |r| {
                     r.get().f(|req| {

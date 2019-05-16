@@ -1,12 +1,8 @@
-use crate::controllers::{pythagorian_triplets, Triplet};
+use crate::controllers::{pythagorian_triplets, get_christmas_lyrics, Triplet, fahrenheit_to_celsius, celsius_to_fahrenheit};
 use actix_web::middleware::session::RequestSession;
 use actix_web::{error, fs, Error, HttpMessage, HttpRequest, HttpResponse};
 use futures::future::Future;
 use tera::{Context, Tera};
-
-struct PythagorianForm {
-    n: i32
-}
 
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
@@ -16,18 +12,12 @@ lazy_static! {
     };
 }
 
-fn show_request(req: &actix_web::HttpRequest) -> Box<Future<Item=HttpResponse, Error=Error>> {
+fn _show_request(req: &actix_web::HttpRequest) -> Box<Future<Item=HttpResponse, Error=Error>> {
     Box::new(req.body().map_err(|e| e.into()).map(move |f| {
         actix_web::HttpResponse::Ok()
             .content_type("text/plain")
             .body(f)
     }))
-}
-
-/// favicon handler
-pub fn favicon(req: &HttpRequest) -> Result<fs::NamedFile, Error> {
-    println!("Where is favicon?");
-    Ok(fs::NamedFile::open("assets/favicon.svg")?)
 }
 
 ///main page handler
@@ -46,54 +36,93 @@ pub fn index(req: &HttpRequest) -> Result<HttpResponse, Error> {
     render_with_ctx("pages/index.html", ctx)
 }
 
-///triplets page
-pub fn triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    let mut _ctx = Context::new();
 
-    render_page("pages/triplets.html")
+///404 page
+pub fn p404(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    render_page("pages/404.html")
 }
 
-///triplets
-pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    let n = "2";
-    show_request(req);
-    println!("state {:?} body {:?}", req.state(), req.body().wait());
-    let triplet: Triplet = pythagorian_triplets(n);
-    let mut ctx = Context::new();
-    ctx.insert("triplet", &triplet.body());
-    ctx.insert("time", &triplet.time());
-
-    println!("triplet {:?} time {:?} ", &triplet.body(), &triplet.time());
-
+///triplets page
+pub fn triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
     render_page("pages/triplets.html")
 }
 
 ///load image page
 pub fn multipart_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    let mut _ctx = Context::new();
-
     render_page("pages/multipart_image.html")
+}
+///convert page
+pub fn convert(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let mut ctx = Context::new();
+    ctx.insert("type", "C");
+
+    render_page("pages/temp_convert.html")
+}
+
+
+///triplets result
+pub fn triplets_result(req: &HttpRequest, ctx: Context) -> Result<HttpResponse, Error> {
+    render_with_ctx("pages/triplets.html", ctx)
+}
+
+///convert result
+pub fn convert_result(req: &HttpRequest, ctx: Context) -> Result<HttpResponse, Error> {
+    render_with_ctx("pages/temp_convert.html", ctx)
+}
+
+
+///christmas lyrics
+pub fn christmas(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let mut ctx = Context::new();
+    let lyrics = get_christmas_lyrics();
+//    println!("lyrics {}", lyrics);
+    ctx.insert("lyrics", &lyrics);
+
+    render_with_ctx("pages/christmas.html", ctx)
+}
+
+///triplets
+pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let n = "2";
+    let triplet: Triplet = pythagorian_triplets(n);
+    let mut ctx = Context::new();
+    ctx.insert("time", &triplet.time().to_string());
+    ctx.insert("triplet", &triplet.body());
+
+    println!("triplet {:?} time {:?} ", &triplet.body(), &triplet.time());
+
+    triplets_result(req, ctx)
 }
 
 ///process multipart image file
 pub fn load_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    println!("state {:?} body {:#?}", req.state(), req.request().headers());
+    println!("load image process initiated");
     let mut _ctx = Context::new();
 
-    render_page("pages/multipart_image.html")
+    multipart_image(req)
 }
 
-//calculations
-pub fn calculate(req: &HttpRequest) -> Result<HttpResponse, Error> {
+///celsius to fahrenheit
+pub fn c2_f(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
-    let calculated: u32 = 10 + 9876;
-    ctx.insert("calculated", &calculated);
-    render_with_ctx("pages/calculate.html", ctx)
+    let temp = celsius_to_fahrenheit("0");
+    println!("temp {}", temp);
+    ctx.insert("temp", &temp);
+    ctx.insert("type", "C");
+
+    convert_result(req, ctx)
 }
 
-///404
-pub fn p404(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    let mut _ctx = Context::new();
-    render_page("pages/404.html")
+//fahrenheit to celsius
+pub fn f2_c(req: &HttpRequest) -> Result<HttpResponse, Error> {
+    let mut ctx = Context::new();
+    let temp = fahrenheit_to_celsius("0");
+    println!("temp {}", temp);
+    ctx.insert("temp", &temp);
+    ctx.insert("type", "F");
+
+    convert_result(req, ctx)
 }
 
 ///function, that renders template with params
