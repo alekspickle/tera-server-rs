@@ -1,0 +1,8 @@
+{% extends "pages/base.html" %}
+{% block title %}Christmas{% endblock title %}
+{% block content %}
+<h1>Lyrics of christmas song generated programmatically</h1>
+{% if lyrics %}
+<div><p class="lyrics">{{ lyrics }}</p></div>
+{% endif %}
+{% endblock content %}

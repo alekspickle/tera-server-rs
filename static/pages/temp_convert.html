@@ -1,0 +1,29 @@
+{% extends "pages/base.html" %}
+{% block title %}Temperature convert{% endblock title %}
+{% block content %}
+<h1>Temperature convert</h1>
+
+{% if type %}
+    {% if type == "C" %}
+        <form action="/c2f" method="post">
+            <label>celsius<input name="temp" type="number"></label>
+            <label><input type="submit" value="confirm"></label>
+        </form>
+    {% endif %}
+    {% if type == "F" %}
+        <form action="/f2c" method="post">
+            <label>fahrenheit<input name="temp" type="number"></label>
+            <label><input type="submit" value="confirm"></label>
+        </form>
+    {% endif %}
+{% else %}
+        <form action="/c2f" method="post">
+            <label>celsius<input name="temp" type="number"></label>
+            <label><input type="submit" value="confirm"></label>
+        </form>
+{% endif %}
+
+{% if temp %}
+<div>{{ temp }}</div>
+{% endif %}
+{% endblock content %}
