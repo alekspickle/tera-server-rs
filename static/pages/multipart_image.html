@@ -1,10 +1,10 @@
 {% extends "pages/base.html" %}
-{% block title %}Triplets{% endblock title %}
+{% block title %}Multipart{% endblock title %}
 {% block content %}
 <h1>Multipart upload</h1>
 <p>
 <h3>Add your image</h3>
-<form form action="/load_image" method="post">
+<form action="/load_image" method="post" enctype='multipart/form-data'>
     <label>image<input name="image" type="file"></label>
     <label><input type="submit" value="confirm"></label>
 </form>
