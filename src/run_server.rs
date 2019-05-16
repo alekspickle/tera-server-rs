@@ -28,6 +28,7 @@ impl Server
                 .resource("/generate_triplets", |r| r.f(router::generate_triplets))
                 .resource("/multipart_image", |r| r.get().f(router::multipart_image))
                 .resource("/load_image", |r| r.post().f(router::load_image))
+                .resource("/load_image", |r| r.get().f(router::load_image))
                 .resource("/calculate", |r| r.get().f(router::calculate))
                 // redirect
                 .resource("/test", |r| {
@@ -62,7 +63,7 @@ impl Server
                 .expect(&format!("{}{}", "Could not bind to port ", &self.port))
         };
 
-        server.run();
         println!("Server is running on 127.0.0.1:{}", &self.port);
+        server.run();
     }
 }
