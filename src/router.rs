@@ -71,7 +71,8 @@ pub fn convert_result(req: &HttpRequest, ctx: Context) -> Result<HttpResponse, E
 }
 
 
-///christmas lyrics
+/// christmas lyrics
+/// get christmas lyrics and send it to the screen
 pub fn christmas(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let lyrics = get_christmas_lyrics();
@@ -82,6 +83,7 @@ pub fn christmas(req: &HttpRequest) -> Result<HttpResponse, Error> {
 }
 
 ///triplets
+/// TODO: get actual form data
 pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let n = "2";
     let triplet: Triplet = pythagorian_triplets(n);
@@ -95,6 +97,7 @@ pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
 }
 
 ///process multipart image file
+/// TODO: get actual form data
 pub fn load_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
     println!("state {:?} body {:#?}", req.state(), req.request().headers());
     println!("load image process initiated");
