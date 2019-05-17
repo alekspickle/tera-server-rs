@@ -110,7 +110,8 @@ pub fn load_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
 pub fn c2_f(req: &HttpRequest) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let temp = celsius_to_fahrenheit("0");
-    println!("temp {}", temp);
+    println!("state {:?} body {:#?}", req.state(), req.request().headers());
+
     ctx.insert("temp", &temp);
     ctx.insert("type", "C");
 
