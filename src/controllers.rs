@@ -1,10 +1,16 @@
 use std::io;
 use std::time::Instant;
+use serde_derive::Deserialize;
 
 #[derive(Debug)]
 struct Rectangle {
     width: u32,
     height: u32,
+}
+
+#[derive(Deserialize)]
+pub struct Fibonacci {
+    n: u32,
 }
 
 #[derive(Debug)]

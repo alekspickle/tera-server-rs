@@ -1,7 +1,8 @@
-use crate::controllers::{pythagorian_triplets, get_christmas_lyrics, Triplet, fahrenheit_to_celsius, celsius_to_fahrenheit};
-use actix_web::middleware::session::RequestSession;
-use actix_web::{error, fs, Error, HttpMessage, HttpRequest, HttpResponse};
-use futures::future::Future;
+use crate::controllers::{pythagorian_triplets, get_christmas_lyrics, Fibonacci,
+                         Triplet, fahrenheit_to_celsius, celsius_to_fahrenheit};
+use actix_web::{error, web, Error, HttpRequest, HttpResponse};
+use web::{Form, Data, Query};
+use std::collections::HashMap;
 use tera::{Context, Tera};
 
 lazy_static! {
@@ -12,24 +13,16 @@ lazy_static! {
     };
 }
 
-fn _show_request(req: &actix_web::HttpRequest) -> Box<Future<Item=HttpResponse, Error=Error>> {
-    Box::new(req.body().map_err(|e| e.into()).map(move |f| {
-        actix_web::HttpResponse::Ok()
-            .content_type("text/plain")
-            .body(f)
-    }))
-}
-
 ///main page handler
-pub fn index(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn index(query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
     let mut counter = 1;
-    if let Some(count) = req.session().get::<i32>("counter")? {
-        println!("SESSION value: {}", count);
-        counter = count + 1;
-    }
+    // if let Some(count) = req.app_data().get::<i32>("counter")? {
+    //     println!("SESSION value: {}", count);
+    //     counter = count + 1;
+    // }
 
     // set counter to session
-    req.session().set("counter", counter)?;
+    // req.session().set("counter", counter)?;
 
     let mut ctx = Context::new();
     ctx.insert("counter", &counter);
@@ -38,21 +31,31 @@ pub fn index(req: &HttpRequest) -> Result<HttpResponse, Error> {
 
 
 ///404 page
-pub fn p404(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    render_page("pages/404.html")
+pub fn p404(t: Data<Tera>) -> Result<HttpResponse, Error> {
+    let s = t
+        .render("pages/404.html", &Context::new())
+        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
 ///triplets page
-pub fn triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn triplets() -> Result<HttpResponse, Error> {
     render_page("pages/triplets.html")
 }
 
 ///load image page
-pub fn multipart_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn multipart_image() -> Result<HttpResponse, Error> {
     render_page("pages/multipart_image.html")
 }
+
+///fibonacci page
+pub fn fibonacci() -> Result<HttpResponse, Error> {
+    render_page("pages/multipart_image.html")
+}
+
 ///convert page
-pub fn convert(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn convert() -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     ctx.insert("type", "C");
 
@@ -60,20 +63,17 @@ pub fn convert(req: &HttpRequest) -> Result<HttpResponse, Error> {
 }
 
 
-///triplets result
-pub fn triplets_result(req: &HttpRequest, ctx: Context) -> Result<HttpResponse, Error> {
-    render_with_ctx("pages/triplets.html", ctx)
-}
-
 ///convert result
-pub fn convert_result(req: &HttpRequest, ctx: Context) -> Result<HttpResponse, Error> {
+/// for both cases
+pub fn convert_result(ctx: Context)
+                      -> Result<HttpResponse, Error> {
     render_with_ctx("pages/temp_convert.html", ctx)
 }
 
 
 /// christmas lyrics
 /// get christmas lyrics and send it to the screen
-pub fn christmas(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn christmas() -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let lyrics = get_christmas_lyrics();
 //    println!("lyrics {}", lyrics);
@@ -84,7 +84,9 @@ pub fn christmas(req: &HttpRequest) -> Result<HttpResponse, Error> {
 
 ///triplets
 /// TODO: get actual form data
-pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn generate_triplets(query: Query<HashMap<String, String>>)
+                         -> Result<HttpResponse, Error> {
+    println!("params {:?}", query.get("temp"));
     let n = "2";
     let triplet: Triplet = pythagorian_triplets(n);
     let mut ctx = Context::new();
@@ -93,40 +95,49 @@ pub fn generate_triplets(req: &HttpRequest) -> Result<HttpResponse, Error> {
 
     println!("triplet {:?} time {:?} ", &triplet.body(), &triplet.time());
 
-    triplets_result(req, ctx)
+    render_with_ctx("pages/triplets.html", ctx)
 }
 
 ///process multipart image file
 /// TODO: get actual form data
-pub fn load_image(req: &HttpRequest) -> Result<HttpResponse, Error> {
-    println!("state {:?} body {:#?}", req.state(), req.request().headers());
+pub fn load_image(query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
+    // println!("state {:?} body {:#?}", req.state(), req.request().headers());
     println!("load image process initiated");
-    let mut _ctx = Context::new();
+    let mut ctx = Context::new();
 
-    multipart_image(req)
+    render_with_ctx("pages/multipart_image.html", ctx)
+}
+
+/// fibonacci
+pub fn fibonacci_culc(params: Form<Fibonacci>, query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
+    // println!("params {}", params);
+    let mut ctx = Context::new();
+    // ctx.insert("number", params.number);
+
+    render_with_ctx("pages/triplets.html", ctx)
 }
 
 ///celsius to fahrenheit
-pub fn c2_f(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn c2_f(query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let temp = celsius_to_fahrenheit("0");
-    println!("state {:?} body {:#?}", req.state(), req.request().headers());
+    // println!("state {:?} body {:#?}", req.state(), req.request().headers());
 
     ctx.insert("temp", &temp);
     ctx.insert("type", "C");
 
-    convert_result(req, ctx)
+    convert_result(ctx)
 }
 
 //fahrenheit to celsius
-pub fn f2_c(req: &HttpRequest) -> Result<HttpResponse, Error> {
+pub fn f2_c(query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let temp = fahrenheit_to_celsius("0");
     println!("temp {}", temp);
     ctx.insert("temp", &temp);
     ctx.insert("type", "F");
 
-    convert_result(req, ctx)
+    convert_result(ctx)
 }
 
 ///function, that renders template with params
