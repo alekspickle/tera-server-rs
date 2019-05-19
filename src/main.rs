@@ -16,7 +16,11 @@ fn main() {
     ::std::env::set_var("RUST_LOG", "actix_web=info");
     //  env_logger::init();
 
-    let mut server_1 = Server { name: "server_1".to_owned(), port: "3000".to_owned() };
+    let mut server_1 = Server {
+        name: "server_1".to_owned(),
+        address: "127.0.0.1".to_owned(),
+        port: "3000".to_owned(),
+    };
 
-    server_1.start("127.0.0.1");
+    server_1.start();
 }
