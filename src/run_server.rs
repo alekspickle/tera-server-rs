@@ -26,12 +26,14 @@ impl Server {
                 .wrap(middleware::Logger::default())
                 .service(resource("/").route(get().to(router::index)))
                 .service(resource("/christmas").route(get().to(router::christmas)))
-                .service(resource("/triplets").route(get().to(router::triplets)))
-                .service(resource("/generate_triplets").route(post().to(router::generate_triplets)))
-                .service(resource("/multipart_image").route(get().to(router::multipart_image)))
                 .service(
-                    resource("/load_image")
-                        .route(get().to(router::load_image))
+                    resource("/triplets")
+                        .route(get().to(router::triplets))
+                        .route(post().to(router::generate_triplets)),
+                )
+                .service(
+                    resource("/multipart_image")
+                        .route(get().to(router::multipart_image))
                         .route(post().to(router::load_image)),
                 )
                 .service(

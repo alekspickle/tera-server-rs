@@ -1,22 +1,30 @@
-use std::io;
-use std::time::Instant;
 use serde_derive::Deserialize;
+use std::time::Instant;
+
 
 #[derive(Debug)]
-struct Rectangle {
+struct _Rectangle {
     width: u32,
     height: u32,
 }
 
-#[derive(Deserialize)]
-pub struct Fibonacci {
-    n: u32,
+#[derive(Debug, Deserialize)]
+pub struct NForm {
+    pub n: String,
+}
+#[derive(Debug, Deserialize)]
+pub struct ConvertForm {
+    pub temp: String,
+}
+#[derive(Debug, Deserialize)]
+pub struct MultipartForm {
+    pub image: String,
 }
 
 #[derive(Debug)]
 pub struct Triplet {
-    body: String,
-    time: u128,
+    pub body: String,
+    pub time: u128,
 }
 
 impl Triplet {
@@ -29,27 +37,27 @@ impl Triplet {
 }
 
 impl Triplet {
-    fn new(body: &str, dur: u128) -> Triplet {
+    fn new(body: String, dur: u128) -> Triplet {
         Triplet {
-            body: String::from(body).clone(),
+            body: body,
             time: dur,
         }
     }
 }
 
-impl Rectangle {
-    fn area(&self) -> u32 {
+impl _Rectangle {
+    fn _area(&self) -> u32 {
         self.width * self.height
     }
-    fn can_hold(&self, rect: &Rectangle) -> bool {
+    fn _can_hold(&self, rect: &_Rectangle) -> bool {
         self.width > rect.width && self.height > rect.height
     }
 }
 
-pub fn draw_rectangle(width: &str, height: &str) -> String {
+pub fn _draw_rectangle(width: &str, height: &str) -> String {
     let width: u32 = width.trim().parse().expect("Please type a number!");
     let height: u32 = height.trim().parse().expect("Please type a number!");
-    let rect = Rectangle { width, height };
+    let _rect = _Rectangle { width, height };
     let mut w = String::from("");
     for x in 0..=height {
         //left
@@ -60,7 +68,7 @@ pub fn draw_rectangle(width: &str, height: &str) -> String {
         }
 
         //middle
-        for _y in 0..=width {
+        for _ in 0..=width {
             if x == 0 || x == height {
                 w.push_str("_")
             } else {
@@ -78,34 +86,28 @@ pub fn draw_rectangle(width: &str, height: &str) -> String {
     w
 }
 
-pub fn fibonacci_number(n: i32) -> f64 {
-    println!("Enter number of Fibonacci sequence, you want: ");
-    let mut n = String::new();
+pub fn fibonacci_number(n: String) -> String {
+    let n = n.trim().parse::<f64>();
 
-    io::stdin().read_line(&mut n).expect("Failed to read line.");
-
-    let n: f64 = n
-        .trim()
-        .parse()
-        .expect("Please type a number in f64 format.");
-
-    let sq_five: f64 = f64::powf(5.0, 0.5);
-    let fibonacci: f64 =
-        ((1.0 + sq_five).powf(n) - (1.0 - sq_five)) / (f64::powf(2.0, n) * sq_five);
-    println!(
-        "Here is {}th number of the Fibonacci sequence: {}",
-        n, fibonacci
-    );
-
-    fibonacci
+    match n {
+        Ok(n) => {
+            let sq_five: f64 = f64::powf(5.0, 0.5);
+            let fibonacci: f64 =
+                ((1.0 + sq_five).powf(n) - (1.0 - sq_five)) / (f64::powf(2.0, n) * sq_five);
+            format!(
+                "Here is {}th number of the Fibonacci sequence: {}",
+                n, fibonacci
+            )
+        }
+        Err(_) => "Please type a number in 0.0 format.".to_owned(),
+    }
 }
 
 pub fn pythagorian_triplets(n: &str) -> Triplet {
     let moment = Instant::now();
-    let mut triplets = String::new();
     let n = n.trim().parse::<usize>().expect("Not parseable to usize");
 
-    triplets = (0..)
+    let triplets = (0..)
         .map(|z| {
             (1..=z)
                 .map(move |x| {
@@ -129,34 +131,30 @@ pub fn pythagorian_triplets(n: &str) -> Triplet {
             format!("{} ({}, {}, {});", acc, x.0, x.1, x.2)
         });
 
-    Triplet::new(&triplets, moment.elapsed().as_micros())
+    Triplet::new(triplets, moment.elapsed().as_micros())
 }
 
 pub fn celsius_to_fahrenheit(celsius: &str) -> String {
-    let celsius = celsius
-        .trim()
-        .parse::<f64>();
+    let celsius = celsius.trim().parse::<f64>();
 
     match celsius {
         Ok(val) => {
             let fahrenheit: f64 = val * 9.0 / 5.0 + 32.0;
             fahrenheit.to_string()
         }
-        Err(why) => format!("Sorry, could not parse your number: {}", why)
+        Err(why) => format!("Sorry, could not parse your number: {}", why),
     }
 }
 
 pub fn fahrenheit_to_celsius(f: &str) -> String {
-    let mut fahrenheit = f
-        .trim()
-        .parse::<f64>();
+    let fahrenheit = f.trim().parse::<f64>();
 
     match fahrenheit {
         Ok(val) => {
             let celsius: f64 = val * 9.0 / 5.0 + 32.0;
             celsius.to_string()
         }
-        Err(why) => format!("Sorry, could not parse your number: {}", why)
+        Err(why) => format!("Sorry, could not parse your number: {}", why),
     }
 }
 
@@ -224,3 +222,4 @@ pub fn get_christmas_lyrics() -> String {
 
     output
 }
+
