@@ -5,8 +5,9 @@ authors = ["alexgnatrow <lesha.gnat@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix-web = "1.0.0-beta.4"
+actix-web = "1.0.0-rc"
 actix-files = "0.1.0-beta.4"
+actix-multipart = "0.1.0"
 listenfd = "0.3"
 tera="0.11"
 log = "0.4.0"

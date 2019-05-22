@@ -6,11 +6,12 @@ use actix_multipart::{Field, Multipart, MultipartError};
 use actix_web::{error, web, Error, HttpResponse};
 use futures::future::{err, Either};
 use futures::{Future, Stream};
-use std::cell::Cell;
 
+use std::collections::HashMap;
+use std::cell::Cell;
 use std::fs;
 use std::io::Write;
-use std::collections::HashMap;
+
 use tera::{Context, Tera};
 use web::{Data, Form, Query};
 
@@ -60,7 +61,6 @@ pub fn fibonacci(t: Data<Tera>) -> Result<HttpResponse, Error> {
 ///convert page
 pub fn convert(t: Data<Tera>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
-    ctx.insert("type", "C");
 
     render_page("pages/temp_convert.html")
 }
@@ -86,13 +86,10 @@ pub fn christmas(t: Data<Tera>) -> Result<HttpResponse, Error> {
 ///triplets
 /// TODO: get actual form data
 pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
-    println!("generate query {:?}", data.n);
     let triplet: Triplet = pythagorian_triplets(&data.n);
     let mut ctx = Context::new();
     ctx.insert("time", &triplet.time().to_string());
     ctx.insert("triplet", &triplet.body());
-
-    println!("triplet {:?} time {:?} ", &triplet.body(), &triplet.time());
 
     render_with_ctx("pages/triplets.html", ctx)
 }
@@ -120,21 +117,16 @@ pub fn fibonacci_culc(t: Data<Tera>, data: Form<NForm>) -> Result<HttpResponse, 
 pub fn c2_f(t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let temp = celsius_to_fahrenheit(&data.temp);
-    println!("data {:?}", data);
-
     ctx.insert("temp", &temp);
-    ctx.insert("type", "C");
 
     convert_result(t, ctx)
 }
 
 //fahrenheit to celsius
-pub fn f2_c(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn f2_c(t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
-    let temp = fahrenheit_to_celsius("0");
-    println!("temp {}", temp);
+    let temp = fahrenheit_to_celsius(&data.temp);
     ctx.insert("temp", &temp);
-    ctx.insert("type", "F");
 
     convert_result(t, ctx)
 }

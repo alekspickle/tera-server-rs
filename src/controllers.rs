@@ -127,7 +127,7 @@ pub fn pythagorian_triplets(n: &str) -> Triplet {
         .flatten()
         .take(n)
         .fold(String::new(), |acc, x| {
-            println!("triplets {:?} next {:?}", acc, x);
+            // println!("triplets {:?} next {:?}", acc, x);
             format!("{} ({}, {}, {});", acc, x.0, x.1, x.2)
         });
 
@@ -139,8 +139,8 @@ pub fn celsius_to_fahrenheit(celsius: &str) -> String {
 
     match celsius {
         Ok(val) => {
-            let fahrenheit: f64 = val * 9.0 / 5.0 + 32.0;
-            fahrenheit.to_string()
+            let fahrenheit: f64 = val * 9. / 5. + 32.;
+            fahrenheit.to_string() + "°F"
         }
         Err(why) => format!("Sorry, could not parse your number: {}", why),
     }
@@ -151,8 +151,8 @@ pub fn fahrenheit_to_celsius(f: &str) -> String {
 
     match fahrenheit {
         Ok(val) => {
-            let celsius: f64 = val * 9.0 / 5.0 + 32.0;
-            celsius.to_string()
+            let celsius: f64 = (val - 32.) * 5. / 9.;
+            celsius.to_string() + "°C"
         }
         Err(why) => format!("Sorry, could not parse your number: {}", why),
     }
