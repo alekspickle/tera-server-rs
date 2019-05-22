@@ -1,0 +1,14 @@
+{% extends "pages/base.html" %}
+{% block title %}Fibonacci number{% endblock title %}
+{% block content %}
+<h1>Calculate number of Fibonacci sequence</h1>
+
+<form action="/fibonacci" method="post">
+    <label>fibonacci number<input name="n" type="number"></label>
+    <label><input type="submit" value="confirm"></label>
+</form>
+
+{% if number %}
+<div>{{ number }}</div>
+{% endif %}
+{% endblock content %}

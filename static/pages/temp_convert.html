@@ -1,29 +1,43 @@
-{% extends "pages/base.html" %}
-{% block title %}Temperature convert{% endblock title %}
-{% block content %}
+{% extends "pages/base.html" %} {% block title %}Temperature convert{% endblock title %} {%
+block content %}
 <h1>Temperature convert</h1>
 
-{% if type %}
-    {% if type == "C" %}
-        <form action="/c2f" method="post">
-            <label>celsius<input name="temp" type="number"></label>
-            <label><input type="submit" value="confirm"></label>
-        </form>
-    {% endif %}
-    {% if type == "F" %}
-        <form action="/f2c" method="post">
-            <label>fahrenheit<input name="temp" type="number"></label>
-            <label><input type="submit" value="confirm"></label>
-        </form>
-    {% endif %}
-{% else %}
-        <form action="/c2f" method="post">
-            <label>celsius<input name="temp" type="number"></label>
-            <label><input type="submit" value="confirm"></label>
-        </form>
-{% endif %}
+<form class="options">
+  <label>to Fahrenheit <input name="temp" type="radio" value="c" /> </label
+  ><label>to Celsius <input name="temp" type="radio" value="f"/></label>
+</form>
+
+<form action="/c2f" method="post">
+  <label>celsius<input name="temp" type="number"/></label>
+  <label><input type="submit" value="confirm"/></label>
+</form>
+<form action="/f2c" method="post" hidden>
+  <label>fahrenheit<input name="temp" type="number"/></label>
+  <label><input type="submit" value="confirm"/></label>
+</form>
 
 {% if temp %}
 <div>{{ temp }}</div>
 {% endif %}
+
+<script>
+  const options = document.querySelectorAll("input[type='radio']");
+
+  function toggle_options(option) {
+    const f2CForm = document.querySelector("form[action='/f2c']");
+    const c2FForm = document.querySelector("form[action='/c2f']");
+    c2FForm.hidden = !c2FForm.hidden;
+    f2CForm.hidden = !f2CForm.hidden;
+  }
+
+  options.forEach(function(el) {
+    el.addEventListener("click", toggle_options);
+  });
+
+  function init() {
+    options[0].checked = true;
+  }
+
+  window.addEventListener("load", init);
+</script>
 {% endblock content %}
