@@ -68,7 +68,16 @@ form.options label {
 input {
   margin: 0 0 1em 1em;
 }
-
+.rust_code {
+  display: block;
+  width: 70%;
+  margin: 0 auto;
+  overflow-x: auto;
+  background: #f1f1f1;
+  color: #6e6b5e;
+  padding: 0.5em;
+  border-radius: 10px;
+}
 .lyrics {
   margin: 0 auto;
   padding: 2em;
