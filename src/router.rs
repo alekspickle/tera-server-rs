@@ -7,13 +7,14 @@ use actix_web::{error, web, Error, HttpResponse};
 use futures::future::{err, Either};
 use futures::{Future, Stream};
 
-use std::collections::HashMap;
+
 use std::cell::Cell;
 use std::fs;
 use std::io::Write;
-
+use std::time::SystemTime;
 use tera::{Context, Tera};
-use web::{Data, Form, Query};
+use web::{Data, Form};
+
 
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
@@ -24,43 +25,39 @@ lazy_static! {
 }
 
 ///main page handler
-pub fn index(query: Query<HashMap<String, String>>) -> Result<HttpResponse, Error> {
-    let mut counter = 1;
-    // if let Some(count) = req.app_data().get::<i32>("counter")? {
-    //     println!("SESSION value: {}", count);
-    //     counter = count + 1;
-    // }
-
+///TODO: use custom struct instead of Cell<u32> in Data
+pub fn index(
+    data: Data<Cell<u32>>,
+    // data: Data<AppData>,
+) -> Result<HttpResponse, Error> {
     // set counter to session
-    // req.session().set("counter", counter)?;
+    data.set(data.get() + 1);
 
-    let mut ctx = Context::new();
-    render_with_ctx("pages/index.html", ctx)
+    render_page("pages/index.html")
 }
 
 ///404 page
-pub fn p404(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn p404(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/404.html")
 }
 
 ///triplets page
-pub fn triplets(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn triplets(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/triplets.html")
 }
 
 ///load image page
-pub fn multipart_image(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn multipart_image() -> Result<HttpResponse, Error> {
     render_page("pages/multipart_image.html")
 }
 
 ///fibonacci page
-pub fn fibonacci(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn fibonacci(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/fibonacci.html")
 }
 
 ///convert page
-pub fn convert(t: Data<Tera>) -> Result<HttpResponse, Error> {
-    let mut ctx = Context::new();
+pub fn convert(_t: Data<Tera>) -> Result<HttpResponse, Error> {
 
     render_page("pages/temp_convert.html")
 }
@@ -68,14 +65,14 @@ pub fn convert(t: Data<Tera>) -> Result<HttpResponse, Error> {
 
 /// convert result
 /// for both cases
-pub fn convert_result(t: Data<Tera>, ctx: Context) -> Result<HttpResponse, Error> {
+pub fn convert_result(_t: Data<Tera>, ctx: Context) -> Result<HttpResponse, Error> {
     render_with_ctx("pages/temp_convert.html", ctx)
 }
 
 
 /// christmas lyrics
 /// get christmas lyrics and send it to the screen
-pub fn christmas(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn christmas(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let lyrics = get_christmas_lyrics();
     ctx.insert("lyrics", &lyrics);
@@ -84,7 +81,6 @@ pub fn christmas(t: Data<Tera>) -> Result<HttpResponse, Error> {
 }
 
 ///triplets
-/// TODO: get actual form data
 pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
     let triplet: Triplet = pythagorian_triplets(&data.n);
     let mut ctx = Context::new();
@@ -95,16 +91,17 @@ pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
 }
 
 ///process multipart image file
-/// TODO: get actual form data
-pub fn load_image(t: Data<Tera>) -> Result<HttpResponse, Error> {
+pub fn load_image(multipart: Multipart, counter: Data<Cell<u32>>) -> Result<HttpResponse, Error> {
     println!("load image process initiated");
-    let ctx = Context::new();
 
-    render_with_ctx("pages/multipart_image.html", ctx)
+    //actually upload it to the server
+    upload(multipart, counter);
+
+    multipart_image()
 }
 
 /// fibonacci
-pub fn fibonacci_culc(t: Data<Tera>, data: Form<NForm>) -> Result<HttpResponse, Error> {
+pub fn fibonacci_culc(_t: Data<Tera>, data: Form<NForm>) -> Result<HttpResponse, Error> {
     let n = data.n.clone();
     let mut ctx = Context::new();
     let number = fibonacci_number(n);
@@ -114,41 +111,41 @@ pub fn fibonacci_culc(t: Data<Tera>, data: Form<NForm>) -> Result<HttpResponse, 
 }
 
 ///celsius to fahrenheit
-pub fn c2_f(t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
+pub fn c2_f(_t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let temp = celsius_to_fahrenheit(&data.temp);
     ctx.insert("temp", &temp);
 
-    convert_result(t, ctx)
+    convert_result(_t, ctx)
 }
 
 //fahrenheit to celsius
-pub fn f2_c(t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
+pub fn f2_c(_t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let temp = fahrenheit_to_celsius(&data.temp);
     ctx.insert("temp", &temp);
 
-    convert_result(t, ctx)
+    convert_result(_t, ctx)
 }
 
-///function, that renders template with params
-pub fn render_with_ctx(template: &str, ctx: Context) -> Result<HttpResponse, Error> {
-    let s = TEMPLATES
-        .render(template, &ctx.to_owned())
-        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(s))
-}
-
-///function, that renders template without params
-pub fn render_page(template: &str) -> Result<HttpResponse, Error> {
-    let s = TEMPLATES
-        .render(template, &Context::new())
-        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(s))
-}
 
 pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
-    let file_path_string = "upload.png";
+    // pub fn save_file(field: Field, count: u32) -> impl Future<Item = i64, Error = Error> {
+    let base = "upload_".to_owned();
+    dbg!("wtf");
+    println!("wtf is happened?");
+    let code = match SystemTime::now().elapsed() {
+        Ok(now) => {
+            println!("now {}", now.as_secs());
+            0
+        }
+        Err(why) => {
+            println!("why {}", why);
+            0
+        }
+    };
+    // let file_path_string = base + ".png";
+    let file_path_string = base + &code.to_string() + ".png";
     let file = match fs::File::create(file_path_string) {
         Ok(file) => file,
         Err(e) => return Either::A(err(error::ErrorInternalServerError(e))),
@@ -181,10 +178,11 @@ pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
 
 pub fn upload(
     multipart: Multipart,
-    counter: web::Data<Cell<usize>>,
+    counter: Data<Cell<u32>>,
 ) -> impl Future<Item = HttpResponse, Error = Error> {
     counter.set(counter.get() + 1);
-    println!("{:?}", counter.get());
+    println!("upload count {:?}", counter.get());
+
 
     multipart
         .map_err(error::ErrorInternalServerError)
@@ -196,4 +194,21 @@ pub fn upload(
             println!("failed: {}", e);
             e
         })
+}
+
+
+///function, that renders template with params
+pub fn render_with_ctx(template: &str, ctx: Context) -> Result<HttpResponse, Error> {
+    let s = TEMPLATES
+        .render(template, &ctx.to_owned())
+        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(s))
+}
+
+///function, that renders template without params
+pub fn render_page(template: &str) -> Result<HttpResponse, Error> {
+    let s = TEMPLATES
+        .render(template, &Context::new())
+        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }

@@ -1,13 +1,16 @@
 use serde_derive::Deserialize;
 use std::time::Instant;
 
-
 #[derive(Debug)]
 struct _Rectangle {
     width: u32,
     height: u32,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct AppData {
+    pub count: u32,
+}
 #[derive(Debug, Deserialize)]
 pub struct NForm {
     pub n: String,
@@ -42,6 +45,14 @@ impl Triplet {
             body: body,
             time: dur,
         }
+    }
+}
+impl AppData {
+    pub fn _new(n: u32) -> AppData {
+        AppData { count: n }
+    }
+    pub fn _increment(&mut self) {
+       self.count += 1;
     }
 }
 

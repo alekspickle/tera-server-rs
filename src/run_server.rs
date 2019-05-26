@@ -1,10 +1,14 @@
+// use crate::controllers::AppData;
 use crate::router;
+
+use std::cell::Cell;
 
 use actix_files as fs;
 use actix_web::http::header;
 use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 
 use web::{get, post, resource, route};
+
 
 pub struct Server {
     pub name: String,
@@ -23,6 +27,8 @@ impl Server {
 
             App::new()
                 .data(tera)
+                .data(Cell::new(0u32))
+                // .data(AppData::new(0u32))
                 .wrap(middleware::Logger::default())
                 .service(resource("/").route(get().to(router::index)))
                 .service(resource("/christmas").route(get().to(router::christmas)))
@@ -34,7 +40,7 @@ impl Server {
                 .service(
                     resource("/multipart_image")
                         .route(get().to(router::multipart_image))
-                        .route(post().to(router::load_image)),
+                        .route(post().to_async(router::load_image)),
                 )
                 .service(
                     resource("/fibonacci")
