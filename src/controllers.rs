@@ -7,23 +7,32 @@ struct _Rectangle {
     height: u32,
 }
 
+/// AppData case struct for actix Data extractor
+/// TODO: use AppData count field for multipart upload filename generation
 #[derive(Debug, Deserialize)]
 pub struct AppData {
     pub count: u32,
 }
+
+/// Triplets and Fibinacci cases struct for actix Form extractor
 #[derive(Debug, Deserialize)]
 pub struct NForm {
     pub n: String,
 }
+
+/// Temperature case struct for actix Form extractor
 #[derive(Debug, Deserialize)]
 pub struct ConvertForm {
     pub temp: String,
 }
+
+/// Multipart case struct for actix Form extractor
 #[derive(Debug, Deserialize)]
 pub struct MultipartForm {
     pub image: String,
 }
 
+/// Representation of one triplet object
 #[derive(Debug)]
 pub struct Triplet {
     pub body: String,
@@ -31,15 +40,15 @@ pub struct Triplet {
 }
 
 impl Triplet {
-    pub fn body(&self) -> String {
-        self.body.clone()
+    /// body getter
+    pub fn body(&self) -> &str {
+        &self.body
     }
+    /// time getter
     pub fn time(&self) -> u128 {
         self.time
     }
-}
-
-impl Triplet {
+    /// Triplet constructor
     fn new(body: String, dur: u128) -> Triplet {
         Triplet {
             body: body,

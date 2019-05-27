@@ -63,15 +63,15 @@ pub fn convert(_t: Data<Tera>) -> Result<HttpResponse, Error> {
 }
 
 
-/// convert result
+/// convert result page
 /// for both cases
 pub fn convert_result(_t: Data<Tera>, ctx: Context) -> Result<HttpResponse, Error> {
     render_with_ctx("pages/temp_convert.html", ctx)
 }
 
 
-/// christmas lyrics
-/// get christmas lyrics and send it to the screen
+/// Christmas lyrics route
+/// Get christmas lyrics and send it to the screen
 pub fn christmas(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     let mut ctx = Context::new();
     let lyrics = get_christmas_lyrics();
@@ -80,7 +80,7 @@ pub fn christmas(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_with_ctx("pages/christmas.html", ctx)
 }
 
-///triplets
+///Triplets route
 pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
     let triplet: Triplet = pythagorian_triplets(&data.n);
     let mut ctx = Context::new();

@@ -1,11 +1,32 @@
+//! # This is my web server in attempt to learn Rust.
+//! 
+//! Rust is famous for it`s brutal learning curve, so I am doing some basics here.
+//! in order to break through it.
+//!
+//!
+//!
+//! ## For now I have such examples here:
+//! - convert temperature Celsius/Fahrenheit both cases given the number
+//! - calculate given number of Pythagorean triplets 
+//! - calculate sertain Fibonacci number
+//! - assemble christmas song procedurally
+//! 
+//! And show it in the browser.
+//! 
+//! ## Doing now:
+//! - process multipart image upload requests
+//! - add rectangle route and look how it will display
+//! - do some multithreading tasks
+//! - do some futures-related tasks
+
 #[macro_use]
 extern crate tera;
 #[macro_use]
 extern crate lazy_static;
 
-mod controllers;
+pub mod controllers;
 pub mod router;
-mod run_server;
+pub mod run_server;
 
 // use env_logger;
 use run_server::Server;

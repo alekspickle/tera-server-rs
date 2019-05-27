@@ -2,6 +2,75 @@
 {% block title %}Christmas{% endblock title %}
 {% block content %}
 <h1>Lyrics of christmas song generated programmatically</h1>
+<pre>
+    Code:
+<code class="rust_code">
+    pub fn get_christmas_lyrics() -> String {
+        let mut output = String::from("");
+        let cuplets: [String; 12] = [
+            "first".to_string(),
+            "second".into(),
+            "third".into(),
+            "fourth".into(),
+            "fifth".into(),
+            "sixth".into(),
+            "seventh".into(),
+            "eighth".into(),
+            "ninth".into(),
+            "tenth".into(),
+            "eleventh".into(),
+            "twelfth".into(),
+        ];
+        for x in 0..cuplets.len() {
+            output = format!(
+                "{}On the {} day of Christmas\nmy true love sent to me:\n",
+                output, cuplets[x]
+            );
+    
+            if x > 10 {
+                output = format!("{}{}", output, "12 Drummers Drumming\n");
+            }
+            if x > 9 {
+                output = format!("{}{}", output, "11 Pipers Piping\n");
+            }
+            if x > 8 {
+                output = format!("{}{}", output, "10 Lords a Leaping\n");
+            }
+            if x > 7 {
+                output = format!("{}{}", output, "9 Ladies Dancing\n");
+            }
+            if x > 6 {
+                output = format!("{}{}", output, "8 Maids a Milking\n");
+            }
+            if x > 5 {
+                output = format!("{}{}", output, "7 Swans a Swimming\n");
+            }
+            if x > 4 {
+                output = format!("{}{}", output, "6 Geese a Laying\n");
+            }
+            if x > 3 {
+                output = format!("{}{}", output, "5 Golden Rings\n");
+            }
+            if x > 2 {
+                output = format!("{}{}", output, "4 Calling Birds\n");
+            }
+            if x > 1 {
+                output = format!("{}{}", output, "3 French Hens\n");
+            }
+            if x > 0 {
+                output = format!("{}{}", output, "2 Turtle Doves\n");
+            }
+            if x == 0 {
+                output = format!("{}{}", output, "A Partridge in a Pear Tree!\n");
+            } else {
+                output = format!("{}{}", output, "and a Partridge in a Pear Tree!\n");
+            }
+        }
+    
+        output
+    }
+</code>
+</pre>
 {% if lyrics %}
 <div><p class="lyrics">{{ lyrics }}</p></div>
 {% endif %}
