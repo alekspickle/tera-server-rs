@@ -68,6 +68,12 @@ form.options label {
 input {
   margin: 0 0 1em 1em;
 }
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
 .rust_code {
   display: block;
   width: 70%;

@@ -14,6 +14,7 @@
 //! And show it in the browser.
 //! 
 //! ## Doing now:
+//! - find a way render through tera without *static ref*
 //! - process multipart image upload requests
 //! - add rectangle route and look how it will display
 //! - do some multithreading tasks

@@ -1,3 +1,12 @@
+//! ## Server
+//! Separate server setup for easier multi-server setup.
+//!
+//!TODO: measure resourses with multiple instances running
+//! with *debug* and *release* builds.
+//!
+//!
+//!
+
 // use crate::controllers::AppData;
 use crate::router;
 
@@ -38,6 +47,11 @@ impl Server {
                         .route(post().to(router::generate_triplets)),
                 )
                 .service(
+                    resource("/rectangles")
+                        .route(get().to(router::rectangles))
+                        .route(post().to(router::rectangle_draw)),
+                )
+                .service(
                     resource("/multipart_image")
                         .route(get().to(router::multipart_image))
                         .route(post().to_async(router::load_image)),
@@ -55,7 +69,7 @@ impl Server {
                     get().to(|| HttpResponse::Found().header(header::LOCATION, "/").finish()),
                 ))
                 .service(fs::Files::new("/", "./static/**/*"))
-                // default
+                // set default route to 404
                 .default_service(route().to(router::p404))
         })
         .bind(path)

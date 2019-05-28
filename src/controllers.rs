@@ -1,10 +1,18 @@
+//! ## Calculate and store
+//! Do all the heavy computations here. Return results to the router.
+//!
+//! Stores all extractor`s related structs.
+//! - Data
+//! - Form
+//!
 use serde_derive::Deserialize;
 use std::time::Instant;
 
-#[derive(Debug)]
-struct _Rectangle {
-    width: u32,
-    height: u32,
+
+#[derive(Debug, Deserialize)]
+pub struct Rectangle {
+    pub width: u32,
+    pub height: u32,
 }
 
 /// AppData case struct for actix Data extractor
@@ -65,11 +73,11 @@ impl AppData {
     }
 }
 
-impl _Rectangle {
+impl Rectangle {
     fn _area(&self) -> u32 {
         self.width * self.height
     }
-    fn _can_hold(&self, rect: &_Rectangle) -> bool {
+    fn _can_hold(&self, rect: &Rectangle) -> bool {
         self.width > rect.width && self.height > rect.height
     }
 }
@@ -77,7 +85,7 @@ impl _Rectangle {
 pub fn _draw_rectangle(width: &str, height: &str) -> String {
     let width: u32 = width.trim().parse().expect("Please type a number!");
     let height: u32 = height.trim().parse().expect("Please type a number!");
-    let _rect = _Rectangle { width, height };
+    let _rect = Rectangle { width, height };
     let mut w = String::from("");
     for x in 0..=height {
         //left
