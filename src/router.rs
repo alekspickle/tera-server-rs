@@ -9,7 +9,7 @@
 
 use crate::controllers::{
     celsius_to_fahrenheit, fahrenheit_to_celsius, fibonacci_number, get_christmas_lyrics,
-    pythagorian_triplets, ConvertForm, NForm, Triplet, Rectangle
+    pythagorian_triplets, ConvertForm, NForm, Triplet
 };
 use actix_multipart::{Field, Multipart, MultipartError};
 use actix_web::{error, web, Error, HttpResponse};
@@ -55,11 +55,6 @@ pub fn triplets(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/triplets.html")
 }
 
-///rectangles page
-pub fn rectangles(_t: Data<Tera>) -> Result<HttpResponse, Error> {
-    render_page("pages/rectangles.html")
-}
-
 ///load image page
 pub fn multipart_image() -> Result<HttpResponse, Error> {
     render_page("pages/multipart_image.html")
@@ -102,16 +97,6 @@ pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
     ctx.insert("triplet", &triplet.body());
 
     render_with_ctx("pages/triplets.html", ctx)
-}
-
-///Rectangle draw route
-pub fn rectangle_draw(t: Data<Tera>, data: Form<Rectangle>) -> Result<HttpResponse, Error> {
-    println!("rectangle data w:{} h:{}", data.width,data.height);
-    println!("Tera data {:?}", t);
-
-    let ctx = Context::new();
-
-    render_with_ctx("pages/rectangles.html",ctx)
 }
 
 ///process multipart image file

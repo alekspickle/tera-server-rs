@@ -8,13 +8,6 @@
 use serde_derive::Deserialize;
 use std::time::Instant;
 
-
-#[derive(Debug, Deserialize)]
-pub struct Rectangle {
-    pub width: u32,
-    pub height: u32,
-}
-
 /// AppData case struct for actix Data extractor
 /// TODO: use AppData count field for multipart upload filename generation
 #[derive(Debug, Deserialize)]
@@ -71,47 +64,6 @@ impl AppData {
     pub fn _increment(&mut self) {
        self.count += 1;
     }
-}
-
-impl Rectangle {
-    fn _area(&self) -> u32 {
-        self.width * self.height
-    }
-    fn _can_hold(&self, rect: &Rectangle) -> bool {
-        self.width > rect.width && self.height > rect.height
-    }
-}
-
-pub fn _draw_rectangle(width: &str, height: &str) -> String {
-    let width: u32 = width.trim().parse().expect("Please type a number!");
-    let height: u32 = height.trim().parse().expect("Please type a number!");
-    let _rect = Rectangle { width, height };
-    let mut w = String::from("");
-    for x in 0..=height {
-        //left
-        if x == 0 {
-            w.push_str(" ")
-        } else {
-            w.push_str("|")
-        }
-
-        //middle
-        for _ in 0..=width {
-            if x == 0 || x == height {
-                w.push_str("_")
-            } else {
-                w.push_str(" ")
-            }
-        }
-
-        //right
-        if x == 0 {
-            w.push_str(" ")
-        } else {
-            w.push_str("|")
-        }
-    }
-    w
 }
 
 pub fn fibonacci_number(n: String) -> String {

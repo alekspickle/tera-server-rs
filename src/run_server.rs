@@ -47,11 +47,6 @@ impl Server {
                         .route(post().to(router::generate_triplets)),
                 )
                 .service(
-                    resource("/rectangles")
-                        .route(get().to(router::rectangles))
-                        .route(post().to(router::rectangle_draw)),
-                )
-                .service(
                     resource("/multipart_image")
                         .route(get().to(router::multipart_image))
                         .route(post().to_async(router::load_image)),
