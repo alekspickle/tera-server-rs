@@ -1,0 +1,21 @@
+{% extends "pages/base.html" %}
+{% block title %}Rectangles{% endblock title %}
+{% block content %}
+<h1>Rectangle draw</h1>
+<p>
+<h3>Set width and height of next rectangle</h3>
+<form form action="/rectangles" method="post">
+    <label>width<input name="width" type="number"></label>
+    <label>height<input name="height" type="number"></label>
+    <label><input type="submit" value="confirm"></label>
+</form>
+</p>
+<div class="rectangles row">
+{% if previous %}
+<pre>{{ previous }}</pre>
+{% endif %}
+{% if next %}
+<div>{{ next }}</div>
+{% endif %}
+{% endblock content %}
+</div>
