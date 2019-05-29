@@ -13,10 +13,11 @@
 //!
 //! ## Failed 
 //! - added rectangle drawing from rustbook but to be able to display it,
-//!     need to figure out how to create DOM node (with <br> f.e.)
+//!     need to figure out how to create DOM node (with < br> f.e.)
 //!     because without it, it treated as just innerHTML text
 //! 
 //! ## Doing now:
+//! - finish multipart download
 //! - find a way render through tera without *static ref*
 //! - process multipart image upload requests
 //! - do some multithreading tasks

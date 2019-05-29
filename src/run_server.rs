@@ -19,14 +19,19 @@ use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 use web::{get, post, resource, route};
 
 
+///Server struct for each server to create
 pub struct Server {
     pub name: String,
     pub address: String,
     pub port: String,
-
 }
 
 impl Server {
+    ///start function:
+    /// - define app data
+    /// - define routes
+    /// - bind domain and port to server instance
+    /// - run the server
     pub fn start(&mut self) {
         let path = self.address.to_owned() + ":" + &self.port;
 
