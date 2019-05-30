@@ -1,4 +1,4 @@
-//! ## Process routes. 
+//! ## Process routes.
 //! Make use of controller logic. Derive all output to the screen.
 //!
 //!
@@ -9,7 +9,7 @@
 
 use crate::controllers::{
     celsius_to_fahrenheit, fahrenheit_to_celsius, fibonacci_number, get_christmas_lyrics,
-    pythagorian_triplets, ConvertForm, NForm, Triplet
+    pythagorian_triplets, ConvertForm, NForm, Triplet,
 };
 use actix_multipart::{Field, Multipart, MultipartError};
 use actix_web::{error, web, Error, HttpResponse};
@@ -18,9 +18,9 @@ use futures::{Future, Stream};
 
 
 use std::cell::Cell;
-use std::fs;
-use std::io::Write;
-use std::time::SystemTime;
+use std::fs::File;
+use std::io::{ErrorKind, Write};
+use std::time::{Duration, SystemTime};
 use tera::{Context, Tera};
 use web::{Data, Form};
 
@@ -55,9 +55,17 @@ pub fn triplets(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/triplets.html")
 }
 
-///load image page
+///multipart request image page
 pub fn multipart_image() -> Result<HttpResponse, Error> {
     render_page("pages/multipart_image.html")
+}
+
+///multipart request success image page
+pub fn multipart_success() -> Result<HttpResponse, Error> {
+    let mut ctx = Context::new();
+    ctx.insert("success", "Successfully uploaded an image!");
+
+    render_with_ctx("pages/multipart_image.html", ctx)
 }
 
 ///fibonacci page
@@ -67,7 +75,6 @@ pub fn fibonacci(_t: Data<Tera>) -> Result<HttpResponse, Error> {
 
 ///convert page
 pub fn convert(_t: Data<Tera>) -> Result<HttpResponse, Error> {
-
     render_page("pages/temp_convert.html")
 }
 
@@ -100,13 +107,15 @@ pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
 }
 
 ///process multipart image file
-pub fn load_image(multipart: Multipart, counter: Data<Cell<u32>>) -> Result<HttpResponse, Error> {
-    println!("load image process initiated");
+pub fn load_image(
+    multipart: Multipart,
+) -> impl Future<Item = Result<HttpResponse, Error>, Error = Error> {
+    println!("load image process initiated.  ",);
 
     //actually upload it to the server
-    upload(multipart, counter);
+    upload(multipart)
 
-    multipart_image()
+
 }
 
 /// fibonacci
@@ -139,26 +148,24 @@ pub fn f2_c(_t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Err
 
 
 pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
-    // pub fn save_file(field: Field, count: u32) -> impl Future<Item = i64, Error = Error> {
-    let base = "upload_".to_owned();
-    dbg!("wtf");
-    println!("wtf is happened?");
-    let code = match SystemTime::now().elapsed() {
-        Ok(now) => {
-            println!("now {}", now.as_secs());
-            0
-        }
-        Err(why) => {
-            println!("why {}", why);
-            0
-        }
+    let base = "downloads/upload_".to_owned();
+    let code = match SystemTime::now().duration_since(<std::time::SystemTime>::UNIX_EPOCH) {
+        Ok(now) => now,
+        Err(_) => Duration::new(0, 0),
     };
-    // let file_path_string = base + ".png";
-    let file_path_string = base + &code.to_string() + ".png";
-    let file = match fs::File::create(file_path_string) {
+    let file_path_string = base.clone() + &code.as_millis().to_string() + ".png";
+    let file = match File::create(file_path_string.clone()) {
         Ok(file) => file,
-        Err(e) => return Either::A(err(error::ErrorInternalServerError(e))),
+        Err(match_e) => {
+            if match_e.kind() == ErrorKind::NotFound {
+                println!("Create 'downloads' directory in the root of the project please");
+                File::create(file_path_string).expect("Second file create attempt failed")
+            } else {
+                return Either::A(err(error::ErrorInternalServerError(match_e)));
+            }
+        }
     };
+
     Either::B(
         field
             .fold((file, 0i64), move |(mut file, mut acc), bytes| {
@@ -187,18 +194,13 @@ pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
 
 pub fn upload(
     multipart: Multipart,
-    counter: Data<Cell<u32>>,
-) -> impl Future<Item = HttpResponse, Error = Error> {
-    counter.set(counter.get() + 1);
-    println!("upload count {:?}", counter.get());
-
-
+) -> impl Future<Item = Result<HttpResponse, Error>, Error = Error> {
     multipart
         .map_err(error::ErrorInternalServerError)
         .map(|field| save_file(field).into_stream())
         .flatten()
         .collect()
-        .map(|sizes| HttpResponse::Ok().json(sizes))
+        .map(|_sizes| multipart_image())
         .map_err(|e| {
             println!("failed: {}", e);
             e
