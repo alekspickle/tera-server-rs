@@ -8,6 +8,7 @@
 //! - calculate given number of Pythagorean triplets 
 //! - calculate sertain Fibonacci number
 //! - assemble christmas song procedurally
+//! - accept multipart download
 //! 
 //! And show it in the browser.
 //!
@@ -17,9 +18,7 @@
 //!     because without it, it treated as just innerHTML text
 //! 
 //! ## Doing now:
-//! - finish multipart download
-//! - find a way render through tera without *static ref*
-//! - process multipart image upload requests
+//! - find a way to render through tera as an AppData field, without *static ref TEMPLATE*
 //! - do some multithreading tasks
 //! - do some futures-related tasks
 
@@ -30,15 +29,16 @@ extern crate lazy_static;
 
 pub mod controllers;
 pub mod router;
-pub mod run_server;
+pub mod server;
 
 // use env_logger;
-use run_server::Server;
-
+use server::Server;
+use std::env;
 
 fn main() {
+    //set RUST_LOG enviroment variable to enable logs from actix_web
+    env::set_var("RUST_LOG", "actix_web=info");
     //  init logger
-    ::std::env::set_var("RUST_LOG", "actix_web=info");
     //  env_logger::init();
 
     let mut server_1 = Server {
