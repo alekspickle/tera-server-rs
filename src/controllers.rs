@@ -67,6 +67,7 @@ impl AppData {
 }
 
 pub fn fibonacci_number(n: String) -> String {
+    let moment = Instant::now();
     let n = n.trim().parse::<f64>();
 
     match n {
@@ -75,8 +76,8 @@ pub fn fibonacci_number(n: String) -> String {
             let fibonacci: f64 =
                 ((1.0 + sq_five).powf(n) - (1.0 - sq_five)) / (f64::powf(2.0, n) * sq_five);
             format!(
-                "Here is {}th number of the Fibonacci sequence: {}",
-                n, fibonacci
+                "Here is {}th number of the Fibonacci sequence: {} ({}mcs)",
+                n, fibonacci,moment.elapsed().as_micros()
             )
         }
         Err(_) => "Please type a number in 0.0 format.".to_owned(),

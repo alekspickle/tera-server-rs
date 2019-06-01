@@ -78,7 +78,7 @@ impl Server {
         println!("Server is running on {}:{}", &self.address, &self.port);
 
         match server.run() {
-            Ok(_) => println!("Server is gracefully shut down"),
+            Ok(_) => println!("\nServer is gracefully shut down"),
             Err(why) => println!("There was a problem stoping the server: {}", why),
         };
     }
