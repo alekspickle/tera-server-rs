@@ -1,0 +1,1 @@
+web: ./target/release/my_rust_server $PORT

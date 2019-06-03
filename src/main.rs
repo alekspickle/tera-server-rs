@@ -40,11 +40,12 @@ fn main() {
     env::set_var("RUST_LOG", "actix_web=info");
     //  init logger
     //  env_logger::init();
+    let port = env::var("PORT").unwrap_or_else(|_e| "3000".into());
 
     let mut server_1 = Server {
         name: "server_1".to_owned(),
         address: "127.0.0.1".to_owned(),
-        port: "3000".to_owned(),
+        port: port,
     };
 
     server_1.start();

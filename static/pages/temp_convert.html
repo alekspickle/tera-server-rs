@@ -8,11 +8,11 @@ block content %}
 </form>
 
 <form action="/c2f" method="post">
-  <label>celsius<input name="temp" type="number"/></label>
+  <label>celsius<input name="temp" step="0.0001" placeholder="0" type="number"/></label>
   <label><input type="submit" value="confirm"/></label>
 </form>
 <form action="/f2c" method="post" hidden>
-  <label>fahrenheit<input name="temp" type="number"/></label>
+  <label>fahrenheit<input name="temp" step="0.0001" placeholder="0" type="number"/></label>
   <label><input type="submit" value="confirm"/></label>
 </form>
 
