@@ -122,8 +122,9 @@ pub fn load_image(
 pub fn fibonacci_culc(_t: Data<Tera>, data: Form<NForm>) -> Result<HttpResponse, Error> {
     let n = data.n.clone();
     let mut ctx = Context::new();
-    let number = fibonacci_number(n);
-    ctx.insert("number", &number);
+    let r = fibonacci_number(n);
+    let result = format!("{}{}", r.0, r.1);
+    ctx.insert("number", &result);
 
     render_with_ctx("pages/fibonacci.html", ctx)
 }

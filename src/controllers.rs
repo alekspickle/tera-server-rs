@@ -27,17 +27,11 @@ pub struct ConvertForm {
     pub temp: String,
 }
 
-/// Multipart case struct for actix Form extractor
-#[derive(Debug, Deserialize)]
-pub struct MultipartForm {
-    pub image: String,
-}
-
 /// Representation of one triplet object
 #[derive(Debug)]
 pub struct Triplet {
-    pub body: String,
-    pub time: u128,
+    body: String,
+    time: u128,
 }
 
 impl Triplet {
@@ -62,11 +56,11 @@ impl AppData {
         AppData { count: n }
     }
     pub fn _increment(&mut self) {
-       self.count += 1;
+        self.count += 1;
     }
 }
 
-pub fn fibonacci_number(n: String) -> String {
+pub fn fibonacci_number(n: String) -> (String, String) {
     let moment = Instant::now();
     let n = n.trim().parse::<f64>();
 
@@ -75,12 +69,18 @@ pub fn fibonacci_number(n: String) -> String {
             let sq_five: f64 = f64::powf(5.0, 0.5);
             let fibonacci: f64 =
                 ((1.0 + sq_five).powf(n) - (1.0 - sq_five)) / (f64::powf(2.0, n) * sq_five);
-            format!(
-                "Here is {}th number of the Fibonacci sequence: {} ({}mcs)",
-                n, fibonacci,moment.elapsed().as_micros()
+            (
+                format!(
+                    "Here is {}th number of the Fibonacci sequence: {} ",
+                    n, fibonacci
+                ),
+                format!("({}mcs)", moment.elapsed().as_micros()),
             )
         }
-        Err(_) => "Please type a number in 0.0 format.".to_owned(),
+        Err(_) => (
+            "Please type a number in 0.0 format.".to_owned(),
+            String::new(),
+        ),
     }
 }
 
@@ -204,3 +204,60 @@ pub fn get_christmas_lyrics() -> String {
     output
 }
 
+///TESTS
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    ///test 1st fibonacci number
+    #[test]
+    fn fibonacci_test_1() {
+        let r = fibonacci_number("1".into());
+        assert_eq!("Here is 1th number of the Fibonacci sequence: 1 ", r.0);
+    }
+
+    ///test 30th fibonacci number
+    #[test]
+    fn fibonacci_test_30() {
+        let r = fibonacci_number("30".into());
+        assert_eq!(
+            "Here is 30th number of the Fibonacci sequence: 832040.0000002418 ",
+            r.0
+        );
+    }
+
+    /// Celsius to Fahrenheit test
+    #[test]
+    fn c2f_test_0() {
+        let r = celsius_to_fahrenheit("0".into());
+        assert_eq!("32°F", r);
+    }
+
+    /// Fahrenheit to Celsius test
+    #[test]
+    fn f2c_test_0() {
+        let r = fahrenheit_to_celsius("0".into());
+        assert_eq!("-17.77777777777778°C", r);
+    }
+
+    /// Celsius to Fahrenheit test
+    #[test]
+    fn c2f_test_float() {
+        let r = celsius_to_fahrenheit("10.55".into());
+        assert_eq!("50.99°F", r);
+    }
+
+    /// Fahrenheit to Celsius test
+    #[test]
+    fn f2c_test_float() {
+        let r = fahrenheit_to_celsius("54.876".into());
+        assert_eq!("12.708888888888888°C", r);
+    }
+    
+    /// Pythagorean triplets test
+    #[test]
+    fn triplets_test() {
+        let r = pythagorian_triplets("1");
+        assert_eq!(" (3, 4, 5);", r.body());
+    }
+}
