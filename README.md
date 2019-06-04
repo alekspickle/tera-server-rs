@@ -1,11 +1,11 @@
 ## Simple server to learn rust
 
-listenfd - this is crate for passing port to the server during development
-
-so the run script is a bit different:
+you can pass PORT env variable to change default port to run at,
+so the run script is as follows
 
 ```bash
- systemfd --no-pid -s http::3000 -- cargo watch -x run 
+export PORT=4444
+cargo run
  ```
 
 
