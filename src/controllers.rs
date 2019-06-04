@@ -88,6 +88,8 @@ pub fn pythagorian_triplets(n: &str) -> Triplet {
     let moment = Instant::now();
     let n = n.trim().parse::<usize>().expect("Not parseable to usize");
 
+    // got the code from community 
+    // just to perform some heavy calculations
     let triplets = (0..)
         .map(|z| {
             (1..=z)
