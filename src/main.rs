@@ -1,3 +1,4 @@
+#![allow(unused)]
 //! # This is my web server in attempt to learn Rust.
 //! 
 //! Rust is famous for it`s brutal learning curve, so I am doing some basics here.
@@ -34,7 +35,6 @@ pub mod server;
 // use env_logger;
 use server::Server;
 use std::env;
-
 fn main() {
     //set RUST_LOG enviroment variable to enable logs from actix_web
     env::set_var("RUST_LOG", "actix_web=info");
