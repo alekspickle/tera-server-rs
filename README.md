@@ -1,4 +1,4 @@
-## Simple server to learn rust
+## Learn Rust! Build the ultimate server template!
 
 you can pass PORT env variable to change default port to run at,
 so the run script is as follows
