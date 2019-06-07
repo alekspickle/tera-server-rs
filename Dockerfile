@@ -1,27 +1,29 @@
-# Dockerfile for creating a statically-linked Rust application using docker's
-# multi-stage build feature. This also leverages the docker build cache to avoid
-# re-downloading dependencies if they have not changed.
-FROM rust:1.35.0 AS build
-WORKDIR /aleksrow/src
+# -*- mode: dockerfile -*-
+#
+# An example Dockerfile showing how to build a Rust executable using this
+# image, and deploy it with a tiny Alpine Linux container.
 
-# Download the target for static linking.
-RUN rustup target add x86_64-unknown-linux-musl
+# You can override this `--build-arg BASE_IMAGE=...` to use different
+# version of Rust or OpenSSL.
+ARG BASE_IMAGE=ekidd/rust-musl-builder:latest
 
-# Create a dummy project and build the app's dependencies.
-# If the Cargo.toml or Cargo.lock files have not changed,
-# we can use the docker build cache and skip these (typically slow) steps.
-RUN USER=root cargo new my_rust_server
-WORKDIR /aleksrow/src/my_rust_server
-COPY Cargo.toml Cargo.lock  build.rs ./
+# Our first FROM statement declares the build environment.
+FROM ${BASE_IMAGE} AS builder
+
+# Add our source code.
+ADD . ./
+
+# Fix permissions on source code.
+RUN sudo chown -R rust:rust /home/rust
+
+# Build our application.
 RUN cargo build --release
 
-# Copy the source and build the application.
-COPY src ./src
-RUN cargo install --target x86_64-unknown-linux-musl --path .
-
-# Copy the statically-linked binary into a scratch container.
-FROM scratch
-COPY --from=build /usr/local/cargo/bin/my_rust_server .
-USER 1000
+# Now, we need to build our _real_ Docker container, copying in `myserver-rs`.
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+COPY --from=builder \
+    /home/rust/src/target/x86_64-unknown-linux-musl/release/myserver-rs \
+    /usr/local/bin/
 EXPOSE 80
-CMD ["./my_rust_server"]
+CMD /usr/local/bin/myserver-rs
