@@ -6,8 +6,12 @@
 //! - Form
 //!
 use serde_derive::Deserialize;
-use std::time::Instant;
-
+use std::{
+    fs::{self, DirEntry},
+    io,
+    path::Path,
+    time::Instant,
+};
 /// AppData case struct for actix Data extractor
 /// TODO: use AppData count field for multipart upload filename generation
 #[derive(Debug, Deserialize)]
@@ -88,7 +92,7 @@ pub fn pythagorian_triplets(n: &str) -> Triplet {
     let moment = Instant::now();
     let n = n.trim().parse::<usize>().expect("Not parseable to usize");
 
-    // got the code from community 
+    // got the code from community
     // just to perform some heavy calculations
     let triplets = (0..)
         .map(|z| {
@@ -206,6 +210,26 @@ pub fn get_christmas_lyrics() -> String {
     output
 }
 
+///walking a directory only visiting files
+pub fn visit_dirs(dir: &Path, cb: &Fn(&DirEntry)) -> io::Result<()> {
+    //if path provided leads to a directory
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            //for each entry check if it is dir itself
+            if path.is_dir() {
+                //if so, execute recoursively
+                visit_dirs(&path, cb)?;
+            } else {
+                //do stuff with a file
+                cb(&entry);
+            }
+        }
+    }
+    Ok(())
+}
+
 ///TESTS
 #[cfg(test)]
 mod tests {
@@ -255,7 +279,6 @@ mod tests {
         let r = fahrenheit_to_celsius("54.876".into());
         assert_eq!("12.708888888888888°C", r);
     }
-    
     /// Pythagorean triplets test
     #[test]
     fn triplets_test() {
