@@ -21,9 +21,17 @@ body {
   background-color: var(--w);
   margin: 0;
 }
+a {
+  color: whitesmoke;
+  background-color: forestgreen;
+  padding: 1em;
+  border-radius: 5px;
+  text-decoration: none;
+}
 nav a {
   color: var(--w);
   padding: 1em;
+  background-color: unset;
   text-decoration: none;
 }
 nav a:focus,
