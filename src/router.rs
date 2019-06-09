@@ -6,24 +6,26 @@
 //!
 //!
 
-
 use crate::controllers::{
     celsius_to_fahrenheit, fahrenheit_to_celsius, fibonacci_number, get_christmas_lyrics,
-    pythagorian_triplets, ConvertForm, NForm, Triplet,
+    pythagorian_triplets, visit_dirs, ConvertForm, NForm, Triplet,
 };
 use actix_multipart::{Field, Multipart, MultipartError};
-use actix_web::{error, web, Error, HttpResponse};
-use futures::future::{err, Either};
-use futures::{Future, Stream};
-
-
-use std::cell::Cell;
-use std::fs::File;
-use std::io::{ErrorKind, Write};
-use std::time::{Duration, SystemTime};
+use actix_web::{error, web, Error, HttpRequest, HttpResponse};
+use future::{err, Either};
+use futures::{future, Future, Stream};
 use tera::{Context, Tera};
 use web::{Data, Form};
 
+use std::{
+    cell::Cell,
+    process::Command,
+    fs::{self, DirEntry, File},
+    io::{ErrorKind, Write},
+    path::Path,
+    thread,
+    time::{Duration, SystemTime},
+};
 
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
@@ -78,13 +80,11 @@ pub fn convert(_t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/temp_convert.html")
 }
 
-
 /// convert result page
 /// for both cases
 pub fn convert_result(_t: Data<Tera>, ctx: Context) -> Result<HttpResponse, Error> {
     render_with_ctx("pages/temp_convert.html", ctx)
 }
-
 
 /// Christmas lyrics route
 /// Get christmas lyrics and send it to the screen
@@ -110,12 +110,10 @@ pub fn generate_triplets(data: Form<NForm>) -> Result<HttpResponse, Error> {
 pub fn load_image(
     multipart: Multipart,
 ) -> impl Future<Item = Result<HttpResponse, Error>, Error = Error> {
-    println!("load image process initiated.  ",);
+    println!("load image process initiated. ");
 
     //actually upload it to the server
     upload(multipart)
-
-
 }
 
 /// fibonacci
@@ -147,20 +145,22 @@ pub fn f2_c(_t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Err
     convert_result(_t, ctx)
 }
 
-
 pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
     let base = "downloads/upload_".to_owned();
+    println!("file {:?}", field);
     let code = match SystemTime::now().duration_since(<std::time::SystemTime>::UNIX_EPOCH) {
         Ok(now) => now,
         Err(_) => Duration::new(0, 0),
     };
     let file_path_string = base.clone() + &code.as_millis().to_string() + ".png";
+    // let post_str = &file_path_string.clone();
+
     let file = match File::create(file_path_string.clone()) {
         Ok(file) => file,
         Err(match_e) => {
             if match_e.kind() == ErrorKind::NotFound {
                 println!("Create 'downloads' directory in the root of the project please");
-                File::create(file_path_string).expect("Second file create attempt failed")
+                File::create(&file_path_string).expect("Second file create attempt failed")
             } else {
                 return Either::A(err(error::ErrorInternalServerError(match_e)));
             }
@@ -177,6 +177,7 @@ pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
                         println!("file.write_all failed: {:?}", e);
                         MultipartError::Payload(error::PayloadError::Io(e))
                     })?;
+
                     acc += bytes.len() as i64;
                     Ok((file, acc))
                 })
@@ -185,7 +186,10 @@ pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
                     error::BlockingError::Canceled => MultipartError::Incomplete,
                 })
             })
-            .map(|(_, acc)| acc)
+            .map(|(_, acc)| {
+                // post(post_str);
+                acc
+            })
             .map_err(|e| {
                 println!("save_file failed, {:?}", e);
                 error::ErrorInternalServerError(e)
@@ -196,18 +200,19 @@ pub fn save_file(field: Field) -> impl Future<Item = i64, Error = Error> {
 pub fn upload(
     multipart: Multipart,
 ) -> impl Future<Item = Result<HttpResponse, Error>, Error = Error> {
+    let copy = &multipart;
+
     multipart
         .map_err(error::ErrorInternalServerError)
         .map(|field| save_file(field).into_stream())
         .flatten()
         .collect()
-        .map(|_sizes| multipart_image())
+        .map(|_sizes| multipart_success())
         .map_err(|e| {
             println!("failed: {}", e);
             e
         })
 }
-
 
 ///function, that renders template with params
 pub fn render_with_ctx(template: &str, ctx: Context) -> Result<HttpResponse, Error> {

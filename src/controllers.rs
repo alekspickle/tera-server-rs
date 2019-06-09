@@ -210,8 +210,15 @@ pub fn get_christmas_lyrics() -> String {
     output
 }
 
+//callback example
+fn cb(entry: &DirEntry) {
+    println!("dir entry {:?}", entry);
+    let path_string = &entry
+        .path();
+}
+
 ///walking a directory only visiting files
-pub fn visit_dirs(dir: &Path, cb: &Fn(&DirEntry)) -> io::Result<()> {
+pub fn visit_dirs(dir: &Path, cb: &dyn Fn(&DirEntry)) -> io::Result<()> {
     //if path provided leads to a directory
     if dir.is_dir() {
         for entry in fs::read_dir(dir)? {
