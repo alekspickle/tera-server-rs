@@ -25,8 +25,6 @@
 
 #[macro_use]
 extern crate tera;
-// #[macro_use]
-// extern crate lazy_static;
 
 pub mod controllers;
 pub mod router;

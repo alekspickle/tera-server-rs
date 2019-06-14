@@ -27,14 +27,6 @@ use std::{
     time::{Duration, SystemTime},
 };
 
-// lazy_static! {
-//     pub static ref TEMPLATES: Tera = {
-//         let mut tera = compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/static/**/*"));
-//         tera.autoescape_on(vec!["html", ".sql"]);
-//         tera
-//     };
-// }
-
 ///main page handler
 ///TODO: use custom struct instead of Cell<u32> in Data
 pub fn index(
