@@ -13,17 +13,24 @@ FROM ${BASE_IMAGE} AS builder
 # Add our source code.
 ADD . ./
 
-# Fix permissions on source code.
+# At this point:
+#RUN pwd -> /home/rust/src
+
+# Fix permissions on source code (rust-musl-builder).
 RUN sudo chown -R rust:rust /home/rust
 
 # Build our application.
 RUN cargo build --release
 
-# Now, we need to build our _real_ Docker container, copying in `myserver-rs`.
+# Now, we need to build our _real_ Docker container, copying in `my_rust_server`.
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
+
+# \ - next line operator
 COPY --from=builder \
-    /home/rust/src/target/x86_64-unknown-linux-musl/release/myserver-rs \
+    /home/rust/src/target/x86_64-unknown-linux-musl/release/my_rust_server \
     /usr/local/bin/
-EXPOSE 80
-CMD /usr/local/bin/myserver-rs
+
+EXPOSE 3000
+
+CMD /usr/local/bin/my_rust_server
