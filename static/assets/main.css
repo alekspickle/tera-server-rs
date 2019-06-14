@@ -106,7 +106,7 @@ input {
 }
 /* 		<-------  	404   	------>	   	*/
 .error {
-  background-image: url(404svg);
+  background-image: url(404.svg);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
