@@ -44,10 +44,10 @@ pub fn index(
         .get("LOGGER")
         .is_some()
     {
-        println!("cargo dir {}", env!("CARGO_MANIFEST_DIR"));
+        Command::new("ls").status()?;
     }
 
-    render_page("pages/index.html", t)
+    render_page("../static/pages/index.html", t)
 }
 
 ///404 page
