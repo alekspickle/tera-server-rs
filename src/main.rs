@@ -26,6 +26,9 @@
 #[macro_use]
 extern crate tera;
 
+use env_logger;
+use std::collections::HashMap;
+
 pub mod controllers;
 pub mod router;
 pub mod server;
@@ -37,9 +40,14 @@ use std::env;
 fn main() {
     //set RUST_LOG enviroment variable to enable logs from actix_web
     env::set_var("RUST_LOG", "actix_web=info");
-    
+
+    let my_vars: HashMap<String, String> = env::vars().collect();
+
     //  init logger
-    //  env_logger::init();
+    if my_vars.get("LOGGER").is_some() {
+    env_logger::init();
+    }
+
     let port = env::var("PORT").unwrap_or_else(|_e| "3000".into());
 
     //all logic inside Server struct
