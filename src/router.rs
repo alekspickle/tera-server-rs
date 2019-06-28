@@ -47,7 +47,7 @@ pub fn index(
         Command::new("ls").status()?;
     }
 
-    render_page("../static/pages/index.html", t)
+    render_page("static/pages/index.html", t)
 }
 
 ///404 page
