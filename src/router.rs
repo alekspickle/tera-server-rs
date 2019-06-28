@@ -221,16 +221,22 @@ pub fn upload(
 
 ///function, that renders template with params
 pub fn render_with_ctx(template: &str, ctx: Context, t: Data<Tera>) -> Result<HttpResponse, Error> {
-    let s = t
-        .render(template, &ctx.to_owned())
-        .map_err(|e| error::ErrorInternalServerError(e))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(s))
+    let s = t.render(template, &ctx.to_owned()).map_err(|e| {
+        println!("Error: {}", e);
+        error::ErrorInternalServerError(e)
+    });
+    Ok(HttpResponse::Ok()
+        .content_type("text/html")
+        .body::<String>(s?))
 }
 
 ///function, that renders template without params
 pub fn render_page(template: &str, t: Data<Tera>) -> Result<HttpResponse, Error> {
-    let s = t
-        .render(template, &Context::new())
-        .map_err(|e| error::ErrorInternalServerError(e))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(s))
+    let s = t.render(template, &Context::new()).map_err(|e| {
+        println!("Error: {}", e);
+        error::ErrorInternalServerError(e)
+    });
+    Ok(HttpResponse::Ok()
+        .content_type("text/html")
+        .body::<String>(s?))
 }
