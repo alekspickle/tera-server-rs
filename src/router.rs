@@ -44,10 +44,10 @@ pub fn index(
         .get("LOGGER")
         .is_some()
     {
-        Command::new("ls").status()?;
+        // Command::new("ls").status()?;
     }
 
-    render_page("static/pages/index.html", t)
+    render_page("pages/index.html", t)
 }
 
 ///404 page
