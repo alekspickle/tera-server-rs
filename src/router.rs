@@ -213,7 +213,7 @@ pub fn upload(
 pub fn render_with_ctx(template: &str, ctx: Context, t: Data<Tera>) -> Result<HttpResponse, Error> {
     let s = t
         .render(template, &ctx.to_owned())
-        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
+        .map_err(|e| error::ErrorInternalServerError(e))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
@@ -221,6 +221,6 @@ pub fn render_with_ctx(template: &str, ctx: Context, t: Data<Tera>) -> Result<Ht
 pub fn render_page(template: &str, t: Data<Tera>) -> Result<HttpResponse, Error> {
     let s = t
         .render(template, &Context::new())
-        .map_err(|_| error::ErrorInternalServerError("Check template paths"))?;
+        .map_err(|e| error::ErrorInternalServerError(e))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
