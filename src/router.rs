@@ -19,6 +19,8 @@ use web::{Data, Form};
 
 use std::{
     cell::Cell,
+    collections::HashMap,
+    env,
     fs::{self, DirEntry, File},
     io::{ErrorKind, Write},
     path::Path,
@@ -36,6 +38,14 @@ pub fn index(
 ) -> Result<HttpResponse, Error> {
     // set counter to session
     data.set(data.get() + 1);
+
+    if env::vars()
+        .collect::<HashMap<String, String>>()
+        .get("LOGGER")
+        .is_some()
+    {
+        println!("cargo dir {}", env!("CARGO_MANIFEST_DIR"));
+    }
 
     render_page("pages/index.html", t)
 }
