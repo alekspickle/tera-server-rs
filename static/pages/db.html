@@ -1,0 +1,51 @@
+{% extends "pages/base.html" %} {% block title %}Database interaction {% endblock title %} {% block content
+%}
+<h1>Basic db usage</h1>
+<h3>Create or update user</h3>
+<form class="options">
+  <label>create/update <input name="mode" type="radio" value="post" /> </label
+  ><label>get <input name="mode" type="radio" value="get"/></label>
+</form>
+
+<form class="column" action="/db/user" method="post">
+  <label>name<input name="name" required /></label>
+  <label>email<input name="email" required /></label>
+  <label><input type="submit" value="confirm"/></label>
+</form>
+
+<form class="column hidden" action="/db/user" method="get">
+  <label>id <input name="id" type="number"/></label>
+  <label>name <input name="name"/></label>
+  <label>email <input name="email"/></label>
+  <label><input type="submit" value="confirm"/></label>
+</form>
+
+{% if result %} 
+  {% for table in result %}
+    <div>{{ time }}</div>
+  {% endfor %} 
+{% endif %}
+
+<script>
+const options = document.querySelectorAll("input[type='radio']");
+const getUserForm = document.querySelector("form[method='get']");
+const createUserForm = document.querySelector("form[method='post']");
+const rawSQLForm = document.querySelector("form[method='post']");
+
+function toggle_options(forms) {
+    forms[0].classList.toggle('hidden')
+    forms[1].classList.toggle('hidden')
+}
+
+options.forEach(function(el) {
+  el.addEventListener("click", e => toggle_options([createUserForm, getUserForm]));
+});
+
+function init() {
+  options[0].checked = true;
+}
+
+window.addEventListener("load", init);
+</script>
+
+{% endblock content %}

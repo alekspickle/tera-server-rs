@@ -38,12 +38,12 @@ pub fn index(
 ) -> Result<HttpResponse, Error> {
     // set counter to session
     data.set(data.get() + 1);
-
     if env::vars()
         .collect::<HashMap<String, String>>()
         .get("LOGGER")
         .is_some()
     {
+        // println!("{:#?}", t.templates);
         // Command::new("ls").status()?;
     }
 
@@ -76,6 +76,11 @@ pub fn multipart_success(t: Data<Tera>) -> Result<HttpResponse, Error> {
 ///fibonacci page
 pub fn fibonacci(t: Data<Tera>) -> Result<HttpResponse, Error> {
     render_page("pages/fibonacci.html", t)
+}
+
+///DB page
+pub fn db(t: Data<Tera>) -> Result<HttpResponse, Error> {
+    render_page("pages/db.html", t)
 }
 
 ///convert page
@@ -129,6 +134,24 @@ pub fn fibonacci_culc(t: Data<Tera>, data: Form<NForm>) -> Result<HttpResponse, 
     ctx.insert("number", &result);
 
     render_with_ctx("pages/fibonacci.html", ctx, t)
+}
+
+///db create user
+pub fn save_user(t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
+    let mut ctx = Context::new();
+    // let temp = celsius_to_fahrenheit(&data.temp);
+    // ctx.insert("saved", &temp);
+
+    render_with_ctx(template: &str, ctx: Context, t: Data<Tera>)
+}
+
+///db create user
+pub fn get_user(t: Data<Tera>, data: Form<ConvertForm>) -> Result<HttpResponse, Error> {
+    let mut ctx = Context::new();
+    let temp = celsius_to_fahrenheit(&data.temp);
+    ctx.insert("temp", &temp);
+
+    convert_result(t, ctx)
 }
 
 ///celsius to fahrenheit

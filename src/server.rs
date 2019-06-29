@@ -18,7 +18,6 @@ use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 
 use web::{get, post, resource, route};
 
-
 ///Server struct for each server to create
 pub struct Server {
     pub name: String,
@@ -37,7 +36,7 @@ impl Server {
 
         let server = HttpServer::new(|| {
             let mut tera = compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/static/**/*"));
-            tera.autoescape_on(vec!["html", ".sql"]);
+            tera.autoescape_on(vec![".css", ".svg", ".html", ".sql"]);
 
             App::new()
                 .data(tera)
@@ -61,6 +60,12 @@ impl Server {
                         .route(get().to(router::fibonacci))
                         .route(post().to(router::fibonacci_culc)),
                 )
+                .service(resource("/db").route(get().to(router::db)))
+                .service(
+                    resource("/db/user")
+                        .route(get().to(router::get_user))
+                        .route(post().to(router::save_user)),
+                )
                 .service(resource("/convert").route(get().to(router::convert)))
                 .service(resource("/c2f").route(post().to(router::c2_f)))
                 .service(resource("/f2c").route(post().to(router::f2_c)))
@@ -68,7 +73,7 @@ impl Server {
                 .service(resource("/test").route(
                     get().to(|| HttpResponse::Found().header(header::LOCATION, "/").finish()),
                 ))
-                .service(fs::Files::new("/", "./static/**/*"))
+                .service(fs::Files::new("/", "/static/**/*"))
                 // set default route to 404
                 .default_service(route().to(router::p404))
         })
@@ -77,7 +82,9 @@ impl Server {
 
         println!("Server is running on {}:{}", &self.address, &self.port);
 
+
         match server.run() {
+            //match is executed when server is shut down
             Ok(_) => println!("\nServer is gracefully shut down"),
             Err(why) => println!("There was a problem stoping the server: {}", why),
         };

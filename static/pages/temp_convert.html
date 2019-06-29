@@ -11,7 +11,7 @@ block content %}
   <label>celsius<input name="temp" step="0.0001" placeholder="0" type="number"/></label>
   <label><input type="submit" value="confirm"/></label>
 </form>
-<form action="/f2c" method="post" hidden>
+<form class="hidden" action="/f2c" method="post">
   <label>fahrenheit<input name="temp" step="0.0001" placeholder="0" type="number"/></label>
   <label><input type="submit" value="confirm"/></label>
 </form>
@@ -22,22 +22,34 @@ block content %}
 
 <script>
   const options = document.querySelectorAll("input[type='radio']");
+const f2CForm = document.querySelector("form[action='/f2c']");
+const c2FForm = document.querySelector("form[action='/c2f']");
 
-  function toggle_options(option) {
-    const f2CForm = document.querySelector("form[action='/f2c']");
-    const c2FForm = document.querySelector("form[action='/c2f']");
-    c2FForm.hidden = !c2FForm.hidden;
-    f2CForm.hidden = !f2CForm.hidden;
-  }
+function toggle_options(forms) {
+    forms[0].classList.toggle('hidden')
+    forms[1].classList.toggle('hidden')
+}
 
-  options.forEach(function(el) {
-    el.addEventListener("click", toggle_options);
+options.forEach(function(el) {
+  el.addEventListener("click", e => {
+      try{
+          toggle_options([createUserForm, rawSQLForm])
+      }catch(e){
+          console.log('not db page')
+      }
+      try{
+          toggle_options([c2FForm, f2CForm])
+      }catch(e){
+          console.log('not temperature page')
+      }
   });
+});
 
-  function init() {
-    options[0].checked = true;
-  }
+function init() {
+  options[0].checked = true;
+}
 
-  window.addEventListener("load", init);
+window.addEventListener("load", init);
 </script>
+
 {% endblock content %}
