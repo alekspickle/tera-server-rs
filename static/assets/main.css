@@ -63,6 +63,7 @@ form.options {
 }
 form.options label input {
   outline-color: var(--blue);
+  cursor: pointer;
 }
 form.options label {
   border: solid 2px var(--blue);
@@ -72,6 +73,7 @@ form.options label {
   display: flex;
   flex-direction: column;
   background-color: #39becf;
+  cursor: pointer;
 }
 input {
   margin: 0 0 1em 1em;
@@ -81,6 +83,15 @@ input {
   flex-direction: row;
   justify-content: center;
   align-content: center;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.hidden {
+  display: none;
 }
 .rust_code {
   display: block;
@@ -106,7 +117,7 @@ input {
 }
 /* 		<-------  	404   	------>	   	*/
 .error {
-  background-image: url(404.svg);
+  background-image: url(404svg);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
