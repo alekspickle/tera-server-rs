@@ -10,3 +10,7 @@ cargo run
 
 
 and you can see your changes without manually recompiling server thanks to ```cargo watch```.
+
+### Goals
+1. To write server template
+2. To be able to run in docker
